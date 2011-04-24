@@ -9,17 +9,31 @@
 	height: 100px;
 	width: 200px;
 	background-color: #000;
-	border: 1px dashed #D41F00;
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	margin-top: -50px;
 	margin-left: -100px;
 }
+#page .left {
+	float: left;
+	height: 100px;
+	width: 100px;
+	background-color: #7FFFAA;
+}
+#page .right {
+	background-color: #F05;
+	height: 100px;
+	width: 100px;
+	float: left;
+}
 </style>
 </head>
 
 <body>
-<div id="page"></div>
+<div id="page">
+  <div class="left"></div>
+  <div class="right"></div>
+</div>
 </body>
 </html>
