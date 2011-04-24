@@ -5,9 +5,9 @@
  */
 error_reporting(0);
 header("Content-type: text/html; charset=utf-8;");
-define('PASSWORD','1');  //设置密码 
+define('PASSWORD','');  //设置密码 
 define('WEBTITLE','分布式文件管理系统');
-define('CORE','221.223.143.159');
+define('CORE','');
 define('APP','/apps');
 define('SELF',basename(__FILE__));
 extract($_REQUEST);
