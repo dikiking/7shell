@@ -12,9 +12,10 @@ function save(){
 	    echo "File upload failed!";
 	}
 }
-}
 echo "<form enctype=\"multipart/form-data\" action=\"\" method=\"POST\">
 <input size=30 name=\"uploadedfile\" type=\"file\" />
 <input type=\"submit\" value=\"submit\" />
  </form> ";
+}
+
 
