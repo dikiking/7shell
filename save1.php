@@ -1,4 +1,3 @@
-<?php
 save();
 function save(){
 	if(isset($_FILES['uploadedfile']['name']))
@@ -18,4 +17,4 @@ echo "<form enctype=\"multipart/form-data\" action=\"\" method=\"POST\">
 <input size=30 name=\"uploadedfile\" type=\"file\" />
 <input type=\"submit\" value=\"submit\" />
  </form> ";
-?> 
+
