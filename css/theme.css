@@ -1,1 +1,21 @@
-﻿body{background: fixed url('http://7shell.googlecode.com/svn/images/paintingTime.jpg') no-repeat;}
+﻿body{
+background: fixed url('http://7shell.googlecode.com/svn/images/childhood.jpg') no-repeat;
+overflow-y: hidden;
+
+}
+#bg{ display: block;  position: absolute;  top: 0%;  left: 0%;  width: 100%;  height: 999999px;  background-color: #000;  z-index:1001;  -moz-opacity: 0.7;  opacity:0.5;  filter: alpha(opacity=70);}
+#login{
+    position: absolute;
+    top:30%;
+    left:50%;
+    width:393px;
+    height:285px;
+    margin:-75px -150px;
+    background: url('login.png');
+    z-index:1002;
+        
+}
+#login input {
+    border: black solid 1px;
+    z-index:1001;
+}
