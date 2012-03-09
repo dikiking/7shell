@@ -6,3 +6,6 @@ chmod +x bsd
 ./bsd
 修改启动项 /etc/rc.conf
 添加 apache_enable="YES" 允许apache 的service管理
+
+启动apache  ---相关参数 stop reload status restart
+service apache start 
