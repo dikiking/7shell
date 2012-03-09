@@ -4,9 +4,6 @@ setenv PACKAGESITE http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/
 fetch http://7shell.googlecode.com/svn/bsd
 chmod +x bsd
 ./bsd
-修改启动项 /etc/rc.conf
-添加 apache_enable="YES" 允许apache 的service管理
-添加 mysql_enable="YES" 允许mysql 的service管理
 启动apache  ---相关参数 stop reload status restart
 service apache start 
 启动mysql
