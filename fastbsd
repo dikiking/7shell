@@ -1,0 +1,38 @@
+#!/bin/sh
+if [ $(id -u) != "0" ]; then
+    echo "Error: You must be root to run this script"
+    exit 1
+fi
+echo "========================================================================="
+echo "FREEBSD APACHE PHP SETUP"
+echo "========================================================================="
+for pkg in autoconf268 pcre python libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto xproto libXau libXdmcp libpthread-stubs libxcb libXext libXp libXt libXmu libXpm libXaw libmemcached mysql55-server memcached;
+do pkg_add -r $pkg;done
+fetch http://7shell.googlecode.com/svn/freebsd/apache.tar.gz
+fetch http://7shell.googlecode.com/svn/freebsd/php.tar.gz
+fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
+tar zxvf apache.tar.gz
+tar zxvf php.tar.gz
+tar zxvf apr.tar.gz
+mv apache /etc/
+mv php5 /etc/
+mv apr /usr/local/
+mkdir -p /var/www
+chown -R www:www /var/www
+echo "<?php phpinfo();?>">/var/www/index.php
+fetch http://7shell.googlecode.com/svn/php.ini
+cp php.ini /etc/php5/php.ini
+fetch http://7shell.googlecode.com/svn/httpd.conf
+cp httpd.conf /etc/apache/conf/httpd.conf
+fetch http://7shell.googlecode.com/svn/apache
+cp apache /usr/local/etc/rc.d/apache
+chmod +x /usr/local/etc/rc.d/apache
+fetch http://7shell.googlecode.com/svn/my.cnf
+cp my.cnf /var/db/mysql/my.cnf
+fetch http://7shell.googlecode.com/svn/loader.conf
+cp loader.conf /boot/defaults/
+echo 'apache_enable="YES"'>>/etc/rc.conf
+echo 'mysql_enable="YES"'>>/etc/rc.conf
+service apache start
+service mysql-server start
+echo "SETUP Success!"
