@@ -1,4 +1,4 @@
-freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装
+freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装 （nat模式需要转发端口才能外网访问建议桥接方式连接）
 设置163镜像 终端执行以下命令
 setenv PACKAGESITE http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
 fetch http://7shell.googlecode.com/svn/fastbsd
