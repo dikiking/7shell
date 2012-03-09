@@ -1,0 +1,76 @@
+#!/bin/sh
+setenv PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/ro
+if [ $(id -u) != "0" ]; then
+    echo "Error: You must be root to run this script"
+    exit 1
+fi
+echo "========================================================================="
+echo "FREEBSD APACHE PHP SETUP"
+echo "========================================================================="
+for pkg in autoconf268 pcre python libiconv libxml2 oniguruma mbstring gettext curl mbcrypt mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto xproto libXau libXdmcp libpthread-stubs libxcb libXext libXp libXt libXmu libXpm libXaw libXaw libmemcached;
+do pkg_add -r $pkg;done
+
+if [ -s apr-1.4.6.tar.gz ]; then
+  echo "apr-1.4.6.tar.gz [found]"
+  else
+  echo "Error: apr-1.4.6.tar.gz not found!!!download now......"
+  fetch http://labs.renren.com/apache-mirror//apr/apr-1.4.6.tar.gz
+fi
+
+if [ -s apr-util-1.4.1.tar.gz ]; then
+  echo "apr-util-1.4.1.tar.gz [found]"
+  else
+  echo "Error: apr-util-1.4.6.tar.gz not found!!!download now......"
+  fetch http://labs.renren.com/apache-mirror//apr/apr-util-1.4.1.tar.gz
+fi
+
+if [ -s httpd-2.4.1.tar.gz ]; then
+  echo " httpd-2.4.1.tar.gz [found]"
+  else
+  echo "Error: httpd-2.4.1.tar.gz not found!!!download now......"
+  fetch http://mirror.bjtu.edu.cn/apache//httpd/httpd-2.4.1.tar.gz
+fi
+
+if [ -s php-5.4.0.tar.gz ]; then
+  echo " php5.4.0.tar.gz [found]"
+  else
+  echo "Error: php5.4 not found!!!download now......"
+  fetch http://cn.php.net/get/php-5.4.0.tar.gz/from/this/mirror
+  mv mirror php-5.4.0.tar.gz
+fi
+
+
+tar zxvf apr-1.4.6.tar.gz
+cd apr-1.4.6
+./configure
+make && make install
+cd ../
+
+tar zxvf apr-util-1.4.1.tar.gz
+cd apr-util-1.4.1
+./configure --with-apr=/usr/local/apr
+make && make install
+cd ../
+
+tar zxvf httpd-2.4.1.tar.gz
+cd httpd-2.4.1
+./configure --prefix=/etc/apache
+make && make install
+cd ../
+tar zxvf php-5.4.0.tar.gz
+cd php-5.4.0
+'./configure' '--with-layout=GNU' '--with-apxs2=/etc/apache/bin/apxs' '--with-config-file-scan-dir=/etc/php5' '--enable-libxml' '--enable-mysqlnd' '--with-libxml-dir=/usr/local' '--with-pcre-regex=/usr/local' '--with-zlib-dir=/usr' '--with-config-file-path=/etc/php5' '--with-regex=php' '--with-zend-vm=CALL' '--prefix=/etc/php5' --with-mysql --with-mysql --with-pdo-mysql --with-mcrypt --enable-mbstring --with-curl --with-bz2 --with-gd --enable-pcntl --with-iconv --enable-shmop --enable-ftp --enable-bcmath --enable-sockets --with-mysqli
+make && make install
+mkdir -p /var/www
+chown -R www:www /var/www
+fetch http://7shell.googlecode.com/svn/php.ini
+cp php.ini /etc/php5/php.ini
+fetch http://7shell.googlecode.com/svn/httpd.conf
+cp httpd.conf /etc/apache/conf/httpd.conf
+fetch http://7shell.googlecode.com/svn/apache
+cp apache /usr/local/etc/rc.d/apache
+chmod +x /usr/local/etc/rc.d/apache
+cd ../
+echo "SETUP Success!"
+echo " Set apache_enable to YES in /etc/rc.conf or use 'onestart' instead of 'start'."
+echo "service apache start|status|stop|reload"
