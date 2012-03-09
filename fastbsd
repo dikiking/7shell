@@ -36,4 +36,4 @@ echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
 service apache start
 service mysql-server start
-echo "SETUP Success!"
+
