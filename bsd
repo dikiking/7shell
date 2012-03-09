@@ -62,6 +62,7 @@ cd php-5.4.0
 make && make install
 mkdir -p /var/www
 chown -R www:www /var/www
+echo "<?php phpinfo();?>">/var/www/index.php
 fetch http://7shell.googlecode.com/svn/php.ini
 cp php.ini /etc/php5/php.ini
 fetch http://7shell.googlecode.com/svn/httpd.conf
