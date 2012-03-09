@@ -76,5 +76,5 @@ cp my.cnf /var/db/mysql/my.cnf
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
 service apache start
-servcice mysql-server start
+service mysql-server start
 echo "SETUP Success!"
