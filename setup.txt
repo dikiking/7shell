@@ -1,4 +1,4 @@
-freeBSD apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装
+freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装
 设置163镜像
 setenv PACKAGESITE http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
 安装
