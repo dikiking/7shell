@@ -30,6 +30,7 @@ chmod +x /usr/local/etc/rc.d/apache
 fetch http://7shell.googlecode.com/svn/my.cnf
 cp my.cnf /var/db/mysql/my.cnf
 fetch http://7shell.googlecode.com/svn/loader.conf
+kldload accf_http
 cp loader.conf /boot/defaults/
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
