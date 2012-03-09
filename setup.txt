@@ -1,0 +1,8 @@
+设置163镜像
+setenv PACKAGESITE http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
+安装
+fetch http://7shell.googlecode.com/svn/bsd
+chmod +x bsd
+./bsd
+修改启动项 /etc/rc.conf
+添加 apache_enable="YES" 允许apache 的service管理
