@@ -1,5 +1,4 @@
 #!/bin/sh
-setenv PATH /sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/ro
 if [ $(id -u) != "0" ]; then
     echo "Error: You must be root to run this script"
     exit 1
