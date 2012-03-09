@@ -34,6 +34,8 @@ kldload accf_http
 cp loader.conf /boot/defaults/
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
+pkill -9 httpd
+pkill -9 mysqld
 service apache start
 service mysql-server start
 
