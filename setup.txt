@@ -10,3 +10,5 @@ chmod +x fastbsd
 service apache start 
 Æô¶¯mysql
 service mysql-server start
+
+QQÈº£¨91302989£©
