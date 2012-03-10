@@ -10,4 +10,3 @@ service apache start
 启动mysql
 service mysql-server start
 
-QQ群（91302989） 申请验证[freebsd]
