@@ -82,4 +82,4 @@ pkill -9 httpd
 pkill -9 mysqld
 service apache start
 service mysql-server start
-
+rm *.gz
