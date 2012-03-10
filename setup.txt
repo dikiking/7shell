@@ -1,12 +1,14 @@
 freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装 （虚拟机建议网卡选择桥接方式）
-安装终端执行以下命令
-fetch http://7shell.googlecode.com/svn/fastbsd
-chmod +x fastbsd
-./fastbsd
-
-
+【安装】
+#    fetch http://7shell.googlecode.com/svn/fastbsd
+#    chmod +x fastbsd
+#   ./fastbsd
+--------------#是root 登陆后的终端显示
+【服务启动】
 启动apache
 service apache start 
 启动mysql
 service mysql-server start
 
+【更新内容】
+修改 loader.conf 覆盖文件位置~ [0:18 2012年3月11日]
