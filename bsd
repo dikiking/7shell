@@ -6,6 +6,7 @@ fi
 echo "========================================================================="
 echo "FREEBSD APACHE PHP SETUP"
 echo "========================================================================="
+export PACKAGESITE=http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
 for pkg in autoconf268 pcre python libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto xproto libXau libXdmcp libpthread-stubs libxcb libXext libXp libXt libXmu libXpm libXaw libmemcached mysql55-server memcached;
 do pkg_add -r $pkg;done
 
