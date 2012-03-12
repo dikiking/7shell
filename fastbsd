@@ -36,11 +36,12 @@ mv my.cnf /var/db/mysql/
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
 echo 'memcached_enable="YES"'>>/etc/rc.conf
-
+echo 'mongod_enable="YES"'>>/etc/rc.conf
 pkill -9 httpd
 pkill -9 mysqld
 service apache start
 service mysql-server start
 service memcached start
+service  mongod start
 rm *.gz
 
