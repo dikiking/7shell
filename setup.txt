@@ -1,4 +1,4 @@
-freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached 一键安装 （虚拟机建议网卡选择桥接方式）
+freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached +ruby+python+mongodb 一键安装 （虚拟机建议网卡选择桥接方式）
 【安装】
 #    fetch http://7shell.googlecode.com/svn/fastbsd
 #    chmod +x fastbsd
