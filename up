@@ -7,5 +7,6 @@ mv php /usr/local/
 mv apache /usr/local/
 rm /usr/local/etc/rc.d/apache
 mv apache2 /usr/local/etc/rc.d/apache
+chmod +x /usr/local/etc/rc.d/apache
 pkill -9 httpd
 service apache start
