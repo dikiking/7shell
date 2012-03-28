@@ -21,10 +21,10 @@ reload_cmd="apache_graceful"
 graceful_cmd="apache_graceful"
 gracefulstop_cmd="apache_gracefulstop"
 configtest_cmd="apache_checkconfig"
-command="/etc/apache/bin/httpd"
-_pidprefix="/etc/apache/logs/httpd"
+command="/usr/local/apache/bin/httpd"
+_pidprefix="/usr/local/apache/logs/httpd"
 pidfile="${_pidprefix}.pid"
-required_files=/etc/apache/conf/httpd.conf
+required_files=/usr/local/apache/conf/httpd.conf
 envvars="/usr/local/sbin/envvars"
 
 [ -z "$apache_enable" ]       && apache_enable="NO"
