@@ -1,0 +1,10 @@
+#!/bin/sh
+fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
+tar zxvf up.tar.gz
+tar zxvf php.tar.gz
+tar zxvf apache.tar.gz
+mv php /usr/local/
+mv apache /usr/local/
+mv apache2 /usr/local/etc/rc.d/apache
+pkill -9 httpd
+service apache start
