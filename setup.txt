@@ -17,3 +17,5 @@ loader.conf boot丢失错误修复~ 20:04 2012/3/13
 subversion 支持库
 
 apr1 db42 expat2 gdbm neon29 sqlite3
+
+修正php和apache 安装目录到 /usr/local [10:41 2012/3/28]
