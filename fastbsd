@@ -9,14 +9,13 @@ echo "========================================================================="
 export PACKAGESITE=http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
 for pkg in autoconf268 pcre libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXau libXdmcp libpthread-stubs libxcb libXext libXp libXt libXmu libXpm libXaw libmemcached mysql55-server memcached mongodb subversion;
 do pkg_add -r $pkg;done
-fetch http://7shell.googlecode.com/svn/freebsd/apache.tar.gz
-fetch http://7shell.googlecode.com/svn/freebsd/php.tar.gz
+fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
 fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
 tar zxvf apache.tar.gz
 tar zxvf php.tar.gz
 tar zxvf apr.tar.gz
-mv apache /etc/
-mv php5 /etc/
+mv apache /usr/local/
+mv php /usr/local/
 mv apr /usr/local/
 mkdir -p /var/www
 chown -R www:www /var/www
@@ -24,12 +23,7 @@ echo "<?php phpinfo();?>">/var/www/index.php
 fetch http://7shell.googlecode.com/svn/loader.conf
 mv loader.conf /boot/defaults/
 kldload accf_http
-fetch http://7shell.googlecode.com/svn/php.ini
-mv php.ini /etc/php5/
-fetch http://7shell.googlecode.com/svn/httpd.conf
-mv httpd.conf /etc/apache/conf/
-fetch http://7shell.googlecode.com/svn/apache
-mv apache /usr/local/etc/rc.d/apache
+mv apache2 /usr/local/etc/rc.d/apache
 chmod +x /usr/local/etc/rc.d/apache
 fetch http://7shell.googlecode.com/svn/my.cnf
 mv my.cnf /var/db/mysql/
