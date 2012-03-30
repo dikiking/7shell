@@ -15,7 +15,7 @@ if [ -s .install ]; then
  echo 'mysql_enable="YES"'>>/etc/rc.conf
  echo 'memcached_enable="YES"'>>/etc/rc.conf
  echo 'mongod_enable="YES"'>>/etc/rc.conf
- pkg_add -r autoconf268 pcre libmemcached mysql55-server memcached mongodb subversion  libxml2 oniguruma  curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw 
+ pkg_add -r autoconf268 pcre libmemcached mysql55-server memcached mongodb subversion libxml2 oniguruma curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw 
  fetch http://7shell.googlecode.com/svn/loader.conf
  mv loader.conf /boot/defaults/
  kldload accf_http
