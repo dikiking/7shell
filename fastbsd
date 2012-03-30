@@ -11,10 +11,39 @@ for pkg in autoconf268 pcre libiconv libxml2 oniguruma gettext curl mcrypt freet
 do pkg_add -r $pkg;done
 fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
 fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
-tar zxvf up.tar.gz
-tar zxvf apache.tar.gz
-tar zxvf php.tar.gz
-tar zxvf apr.tar.gz
+
+if [ -s up.tar.gz ]; then
+  echo "apache + php [found]"
+ tar zxvf up.tar.gz
+  else
+  echo "Error: up.tar.gz not found!!!download now......"
+  fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
+fi
+
+if [ -s apache.tar.gz ]; then
+  echo "apache [found]"
+ tar zxvf apache.tar.gz
+  else
+  echo "Error: apache.tar.gz not found!!!download now......"
+  fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
+fi
+
+if [ -s php.tar.gz ]; then
+  echo "php [found]"
+ tar zxvf php.tar.gz
+  else
+  echo "Error: php.tar.gz not found!!!download now......"
+  fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
+fi
+
+if [ -s apr.tar.gz ]; then
+  echo "apr [found]"
+ tar zxvf apr.tar.gz
+  else
+  echo "Error: apr-1.4.6.tar.gz not found!!!download now......"
+  fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
+fi
+
 mv apache /usr/local/
 mv php /usr/local/
 mv apr /usr/local/
