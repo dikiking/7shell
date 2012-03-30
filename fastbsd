@@ -13,8 +13,6 @@ if [ -s .install ]; then
  echo "install">.install
  pkg_add -r autoconf268 pcre libmemcached mysql55-server memcached mongodb subversion libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw 
 fi
-fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
-fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
 
 if [ -s up.tar.gz ]; then
   echo "apache + php [found]"
