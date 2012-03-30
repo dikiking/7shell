@@ -1,4 +1,4 @@
-freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached +ruby+python+mongodb 一键安装 （虚拟机建议网卡选择桥接方式）
+freebsd9.0 apache2.41+ mysql5.5.21+ php5.4+memcached +ruby+python+mongodb 一键安装 
 【安装】
 #    fetch http://7shell.googlecode.com/svn/fastbsd
 #    chmod +x fastbsd
@@ -13,9 +13,4 @@ service mysql-server start
 【更新内容】
 修改 loader.conf 覆盖文件位置~ [0:18 2012年3月11日]
 loader.conf boot丢失错误修复~ 20:04 2012/3/13
-
-subversion 支持库
-
-apr1 db42 expat2 gdbm neon29 sqlite3
-
 修正php和apache 安装目录到 /usr/local [10:41 2012/3/28]
