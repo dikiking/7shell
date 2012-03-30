@@ -23,6 +23,7 @@ fi
 
 if [ -s up.tar.gz ]; then
   echo "apache + php [found]"
+  tar zxvf up.tar.gz
   else
   echo "Error: up.tar.gz not found!!!download now......"
   fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
