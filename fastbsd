@@ -64,7 +64,6 @@ fetch http://7shell.googlecode.com/svn/my.cnf
 if [-d /var/db/mysql ]; then
 mv my.cnf /var/db/mysql/
 fi
-
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
 echo 'memcached_enable="YES"'>>/etc/rc.conf
