@@ -11,7 +11,7 @@ if [ -s .install ]; then
   echo "UPDATING"
   else
  echo "install">.install
- pkg_add -r autoconf268 pcre libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXau libXdmcp libpthread-stubs libxcb libXext libXp libXt libXmu libXpm libXaw libmemcached mysql55-server memcached mongodb subversion
+ pkg_add -r autoconf268 pcre libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw libmemcached mysql55-server memcached mongodb subversion
 fi
 fetch http://7shell.googlecode.com/svn/freebsd/up.tar.gz
 fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
