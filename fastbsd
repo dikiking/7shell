@@ -11,6 +11,10 @@ if [ -s .install ]; then
   echo "UPDATING"
   else
  echo "install">.install
+ echo 'apache_enable="YES"'>>/etc/rc.conf
+ echo 'mysql_enable="YES"'>>/etc/rc.conf
+ echo 'memcached_enable="YES"'>>/etc/rc.conf
+ echo 'mongod_enable="YES"'>>/etc/rc.conf
  pkg_add -r autoconf268 pcre libmemcached mysql55-server memcached mongodb subversion libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw 
 fi
 
@@ -61,10 +65,6 @@ mv apache2 /usr/local/etc/rc.d/apache
 chmod +x /usr/local/etc/rc.d/apache
 fetch http://7shell.googlecode.com/svn/my.cnf
 mv my.cnf /var/db/mysql/
-echo 'apache_enable="YES"'>>/etc/rc.conf
-echo 'mysql_enable="YES"'>>/etc/rc.conf
-echo 'memcached_enable="YES"'>>/etc/rc.conf
-echo 'mongod_enable="YES"'>>/etc/rc.conf
 pkill -9 httpd
 pkill -9 mysqld
 pkill -9 memcached
