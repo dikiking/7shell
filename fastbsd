@@ -16,6 +16,9 @@ if [ -s .install ]; then
  echo 'memcached_enable="YES"'>>/etc/rc.conf
  echo 'mongod_enable="YES"'>>/etc/rc.conf
  pkg_add -r autoconf268 pcre libmemcached mysql55-server memcached mongodb subversion libiconv libxml2 oniguruma gettext curl mcrypt freetype jpeg png kbproto libICE libSM libX11 xextproto printproto libXext libXp libXt libXmu libXpm libXaw 
+ fetch http://7shell.googlecode.com/svn/loader.conf
+ mv loader.conf /boot/defaults/
+ kldload accf_http
 fi
 
 if [ -s up.tar.gz ]; then
@@ -55,9 +58,6 @@ mv apr /usr/local/
 mkdir -p /var/www
 chown -R www:www /var/www
 echo "<?php phpinfo();?>">/var/www/index.php
-fetch http://7shell.googlecode.com/svn/loader.conf
-mv loader.conf /boot/defaults/
-kldload accf_http
 if [ -s /usr/local/etc/rc.d/apache ]; then
  rm /usr/local/etc/rc.d/apache
 fi
@@ -73,5 +73,5 @@ service apache start
 service mysql-server start
 service memcached start
 service  mongod start
-
+rm *.gz
 
