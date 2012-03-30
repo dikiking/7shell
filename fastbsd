@@ -43,7 +43,6 @@ if [ -s apr.tar.gz ]; then
   echo "Error: apr-1.4.6.tar.gz not found!!!download now......"
   fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
 fi
-
 mv apache /usr/local/
 mv php /usr/local/
 mv apr /usr/local/
@@ -53,19 +52,27 @@ echo "<?php phpinfo();?>">/var/www/index.php
 fetch http://7shell.googlecode.com/svn/loader.conf
 mv loader.conf /boot/defaults/
 kldload accf_http
+if [ -s /usr/local/etc/rc.d/apache ]; then
+ rm /usr/local/etc/rc.d/apache
+fi
 mv apache2 /usr/local/etc/rc.d/apache
 chmod +x /usr/local/etc/rc.d/apache
 fetch http://7shell.googlecode.com/svn/my.cnf
+if [-d /var/db/mysql ]; then
 mv my.cnf /var/db/mysql/
+fi
+
 echo 'apache_enable="YES"'>>/etc/rc.conf
 echo 'mysql_enable="YES"'>>/etc/rc.conf
 echo 'memcached_enable="YES"'>>/etc/rc.conf
 echo 'mongod_enable="YES"'>>/etc/rc.conf
 pkill -9 httpd
 pkill -9 mysqld
+pkill -9 memcached
+pkill -9 mongod
 service apache start
 service mysql-server start
 service memcached start
 service  mongod start
-rm *.gz
+
 
