@@ -59,9 +59,21 @@ if [ -s apr.tar.gz ]; then
   fetch http://7shell.googlecode.com/svn/freebsd/apr.tar.gz
   tar zxvf apr.tar.gz
 fi
-mv apache /usr/local/
-mv php /usr/local/
+
+if [ -s /usr/local/apr ];then
+rm -rf /usr/local/apr
 mv apr /usr/local/
+fi
+
+if [ -s /usr/local/apache ];then
+rm -rf /usr/local/apache
+mv apache /usr/local/
+fi
+if [ -s /usr/local/php ];then
+rm -rf /usr/local/php
+mv php /usr/local/
+fi
+
 mkdir -p /var/www
 chown -R www:www /var/www
 echo "<?php phpinfo();?>">/var/www/index.php
