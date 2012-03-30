@@ -6,7 +6,7 @@ fi
 echo "========================================================================="
 echo "FREEBSD APACHE PHP SETUP"
 echo "========================================================================="
-export PACKAGESITE=http://mirrors.163.com/FreeBSD/ports/i386/packages-9-current/Latest/
+export PACKAGESITE=http://mirrors.163.com/FreeBSD/ports/i386/packages-9.0-release/Latest/
 if [ -s .install ]; then
   echo "UPDATING"
   else
