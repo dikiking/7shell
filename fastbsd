@@ -62,18 +62,16 @@ fi
 
 if [ -s /usr/local/apr ];then
 rm -rf /usr/local/apr
-mv apr /usr/local/
 fi
-
+mv apr /usr/local/
 if [ -s /usr/local/apache ];then
 rm -rf /usr/local/apache
-mv apache /usr/local/
 fi
+mv apache /usr/local/
 if [ -s /usr/local/php ];then
 rm -rf /usr/local/php
-mv php /usr/local/
 fi
-
+mv php /usr/local/
 mkdir -p /var/www
 chown -R www:www /var/www
 echo "<?php phpinfo();?>">/var/www/index.php
