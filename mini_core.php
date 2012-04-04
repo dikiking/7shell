@@ -131,8 +131,8 @@ loading……
   function $(id){
     return document.getElementById(id);
   }
-  top1="<dl><dt><span class=\"in\">　</span><span>Filename</span><span>Last modified</span><span>Size</span><span>Chmod / Perms</span><span>Action</span></dt><dd ><span class=\"in\">-</span><span><a href=\"javascript:void()\" onclick=\"ajax(json.back,1)\">Parent Directory</a></span><span></span><span></span><span></span><span></span></dd>";
  function ajax(url,type){
+      top1="<dl><dt><span class=\"in\">　</span><span>Filename</span><span>Last modified</span><span>Size</span><span>Chmod / Perms</span><span>Action</span></dt><dd ><span class=\"in\">-</span><span><a href=\"javascript:void()\" onclick=\"ajax(json.back,1)\">Parent Directory</a></span><span></span><span></span><span></span><span></span></dd>";
     $("load").style.display="block";
     var xml;
     try{
@@ -146,7 +146,6 @@ loading……
             $("show").innerHTML=top1;
             eval(xml.responseText);
            /***********************/
-      //$("show").innerHTML="";
      $("runtime").innerHTML=json.runtime;
      //if(json.file.total>100) json.file.total=100;
  for (var i=0;i<json.dir.total;i++){
@@ -162,7 +161,8 @@ loading……
       top1+="<dd class=\""+alt+"\" onmouseover=\"this.className='focus';\" onmouseout=\"this.className='"+alt+"';\"><span class=\"in\"><input name=\"dl[]\" type=\"checkbox\" value=\"\"></span><span><a href=\"javascript:void();\" name=\"\" onclick=\"ajax(this.name,1)\">"+dir[0]+"</a></span><span><a href=\"javascript:void();\">"+dir[3]+"</a></span><span>"+dir[4]+"</span><span><a href=\"javascript:void();\">"+dir[1]+"</a>/<a href=\"javascript:void();\">"+dir[2]+"</a></span><span><a href=\"javascript:void();\">Down</a> |<a href=\"javascript:void();\">Copy</a> |<a href=\"javascript:void();\">Edit</a> |<a href=\"javascript:void();\">Rename</a></span></dd>";
  }
  $("show").innerHTML=top1;
-  $("load").style.display="none";
+ $("load").style.display="none";
+  top1="";
 /*************************/
         }
     }
