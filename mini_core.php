@@ -344,10 +344,10 @@ HTML;
     self::authentication();
     global $path;
     extract($_GET);
-    $url = isset($action) ? strtolower(trim($action, ext)) : 'init';
+    $url = isset($action) ? strtolower(trim($action, __PATH__)) : 'init';
     //分析多个参数
-    if (strpos($url, ext)) {
-      $paths = explode(ext, $url);
+    if (strpos($url, __PATH__)) {
+      $paths = explode(__PATH__, $url);
       $path = array_shift($paths);
       unset($url);
     }
