@@ -11,7 +11,7 @@ class project {
     self::G('runtime');
     header("Content-type:text/html;charset=utf-8");
     $_GET["dir"] = !empty($_GET["dir"]) ? iconv("UTF-8", "GBK", $_GET["dir"]) : $_GET["dir"];
-    $file = !empty($_GET["dir"]) ? rtrim(self::switchUrl($_GET["dir"],true),"/")."/" : sprintf("%s%s",trim(webpath,"/"),"/");
+    $file = !empty($_GET["dir"]) ? rtrim(self::switchUrl($_GET["dir"],true),"/")."/" : sprintf("%s%s",rtrim(__ROOT__,"/"),"/");
     if (!is_readable($file)) return false;
     foreach(scandir($file) as $disk){
         if($disk==".." ||$disk == "." ) continue;
