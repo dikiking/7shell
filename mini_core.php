@@ -1,6 +1,5 @@
 //<?php
-
-date_default_timezone_set('asia/shanghai');
+run();
 class project {
   static function init() {
     self::G('time');
@@ -13,6 +12,8 @@ class project {
     $_GET["dir"] = !empty($_GET["dir"]) ? iconv("UTF-8", "GBK", $_GET["dir"]) : $_GET["dir"];
     $file = !empty($_GET["dir"]) ? rtrim(self::switchUrl($_GET["dir"],true),"/")."/" : sprintf("%s%s",rtrim(__ROOT__,"/"),"/");
     if (!is_readable($file)) return false;
+    chdir($file);
+    $file=strtolower($file);
     foreach(scandir($file) as $disk){
         if($disk==".." ||$disk == "." ) continue;
         if (is_dir($file.$disk)) $dir[] = $disk;
@@ -43,10 +44,10 @@ class project {
     $return["dir"]["total"]=count($directory);
     $return["file"]=$document;
     $return["file"]["total"]=count($document);
-    $return["url"]=$file;
-    $return['ajax']=iconv("GBK", "UTF-8",self::switchUrl($file));
-    $return['back']=iconv("GBK", "UTF-8",self::switchUrl(dirname($file)));
+    $return['ajax']=self::switchUrl(iconv("GBK", "UTF-8",$file));
+    $return['back']=iconv("GBK", "UTF-8",dirname($file));
     $return['runtime']=self::G('runtime','end');
+    $return['disktotal']=self::byte_format(disk_total_space($file));
     echo "json=".json_encode($return);
     unset($return);
     self::G('runtime','end');
@@ -76,7 +77,7 @@ static protected function perms($file, $type = '1') {
 	<meta name="author" content="Steve Smith" />
 	<title>{title}</title>
     <style>
-    a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:block;float:left;font-size:14px;text-indent:0em;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
+    a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:block;float:left;font-size:14px;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
     </style>
 </head>
 <body>
@@ -97,9 +98,8 @@ loading……
 <div id="content">
 <h2>File Manager - Current disk free <span id="total"></span></h2>
   <div id="base">
-    <input class="bt" id="jumpto" name="jumpto" value="Jump to" type="button" />
     <div class="cdrom">
-      <span id="current"></span> - <span id="chmod"></span>/ <span id="perms"></span> 
+       {current} - {chmod} / {perms} 
     </div>
     <div class="cdrom">
       {cdrom}
@@ -147,12 +147,13 @@ loading……
             eval(xml.responseText);
            /***********************/
      $("runtime").innerHTML=json.runtime;
+     $("total").innerHTML=json.disktotal;
      //if(json.file.total>100) json.file.total=100;
  for (var i=0;i<json.dir.total;i++){
       alt= i %2 ? "dd" : "fff";
-      var current=json.ajax;
       var dir=eval("json.dir.dir"+i);
-      top1+="<dd class=\""+alt+"\" onmouseover=\"this.className='focus';\" onmouseout=\"this.className='"+alt+"';\"><span class=\"in\"><input name=\"dl[]\" type=\"checkbox\" value=\"\"></span><span><a href=\"javascript:void();\" name=\""+current+""+dir[0]+"\" onclick=\"ajax(this.name,1)\">"+dir[0]+"</a></span><span><a href=\"javascript:void();\">"+dir[3]+"</a></span><span>"+dir[4]+"</span><span><a href=\"javascript:void();\">"+dir[1]+"</a>/<a href=\"javascript:void();\">"+dir[2]+"</a></span><span><a href=\"\">Rename</a></span></dd>";
+      var url=json.ajax+dir[0];
+      top1+="<dd class=\""+alt+"\" onmouseover=\"this.className='focus';\" onmouseout=\"this.className='"+alt+"';\"><span class=\"in\"><input name=\"dl[]\" type=\"checkbox\" value=\"\"></span><span><a href=\"javascript:void();\" name=\""+url+"\" onclick=\"ajax(this.name,1)\">"+dir[0]+"</a></span><span><a href=\"javascript:void();\">"+dir[3]+"</a></span><span>"+dir[4]+"</span><span><a href=\"javascript:void();\">"+dir[1]+"</a>/<a href=\"javascript:void();\">"+dir[2]+"</a></span><span><a href=\"\">Rename</a></span></dd>";
  }
  //if(json.file.total>100) json.file.total=100;
  for (var i=0;i<json.file.total;i++){
@@ -244,8 +245,8 @@ HTML;
     return str_replace($serach, $replace, $url);
   }
   static protected function explode_path($url) {
-    if (substr_count($url, '*') !== 1) {
-      $path = explode('*', $url);
+    if (substr_count($url, '/') !== 1) {
+      $path = explode('/', $url);
       array_pop($path);
       foreach ($path as $i => $v) {
         $u .= $v . "*";
@@ -319,7 +320,7 @@ HTML;
     header("Location:" . self);
   }
   static protected function login() {
-    printf('
+    $login=<<<LOGIN
          <!DOCTYPE HTML>
          <head>
 	     <meta http-equiv="content-type" content="text/html" />
@@ -328,17 +329,17 @@ HTML;
 	     <style type="text/css">
 	     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}
 	    </style>
-   	    <title>%s</title>
+   	    <title>{title}</title>
         </head>
         <body>
-	   <form method="POST" action="%s">
+	   <form method="POST" action="">
        <span style="font:11px Verdana;">Password: </span><input id="pwd" name="pwd" type="password" size="20">
        <input id="login" type="submit" value="Login">
         </form>
        </body>
        </html>
-
-    ', title, self);
+LOGIN;
+    echo str_replace('{title}',title,$login);
   }
   static function despatcher() {
     self::authentication();
@@ -402,18 +403,6 @@ HTML;
       0x0200) ? 'T' : '-'));
     return $info;
   }
-  static protected function is_utf8($string) {
-    return preg_match('%^(?:
-         [\x09\x0A\x0D\x20-\x7E]            # ASCII
-       | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-       |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-       |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-       |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-       | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-       |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-    )*$%xs', $string);
-  }
   static protected function byte_format($size, $dec = 2) {
     $a = array(
       "B",
@@ -429,5 +418,21 @@ HTML;
     }
     return round($size, $dec) . "" . $a[$pos];
   }
+}
+function run(){
+if(!defined(password)) define('password','');
+if(!defined(title)) define('title','mini');
+if(!defined(copyright)) define('copyright', 'E');
+define('self',$_SERVER["SCRIPT_NAME"]);
+define('crypt', 'ripemd128');
+define('__ROOT__', $_SERVER["DOCUMENT_ROOT"]);
+define('is_win','win' == substr(strtolower(PHP_OS),0,3));
+define('__PATH__', '|');
+date_default_timezone_set('asia/shanghai');
+project::despatcher();
+global $path;
+if (!is_callable(array('project', $path))) return false;
+if (!method_exists('project', $path)) return false;
+call_user_func(array('project', $path));
 }
 //?>
