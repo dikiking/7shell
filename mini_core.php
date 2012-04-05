@@ -198,7 +198,7 @@ HTML;
     $menu = '';
     $action = '';
     $logout = array_shift($menus);
-    $menu .= sprintf('<a href="javascript:void()" onclick=location="%s" >%s</a> | ',
+    $menu .= sprintf('<a href="%s">%s</a> | ',
       '?action=logout', $logout);
     foreach ($menus as $key => $val) {
       $menu .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
