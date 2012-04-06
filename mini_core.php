@@ -153,42 +153,6 @@ static protected function perms($file, $type = '1') {
     <style>
     a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:inline-block;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
     </style>
- <script type="text/javascript">
-  function ajax(arg,type){
-   load.style.display="block";
-   if(type==2 || arg==2) load.innerHTML="功能陆续完善中......";
-   if(type==1) arg='?action=show&dir='+arg;
-   var options={};
-    options.url=arg?arg:'?action=show';
-    options.listener=callback;
-    options.method='GET';
-	var request = createRequest(options);
-	request.send(null);
-}
-function createRequest(options){
-	var req = false;
-	if(window.XMLHttpRequest) {
-		var req = new window.XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		var req = new window.ActiveXObject('Microsoft.XMLHTTP');
-	}
-	if(!req) return false;
-	req.onreadystatechange = function(){
-		if (req.readyState ==4 && req.status == 200){
-			options.listener.call(req);
-		}
-	};
-	req.open(options.method,options.url,true);
-	return req;
-}
-function callback(){
-	var json = eval("("+this.responseText+")");
-    show.innerHTML = json.data;
-    runtime.innerHTML = json.time;
-    memory.innerHTML = json.memory;
-    load.style.display="none";
-}
-</script>
 </head>
 <body>
 <div id="load">
@@ -239,7 +203,42 @@ loading……
   . Copyright (C) 2010-2012
    All Rights Reserved.
 </div>
-<script>
+<script type="text/javascript">
+  function $(d){return document.getElementById(d);}
+  function ajax(arg,type){
+   $("load").style.display="block";
+   if(type==2 || arg==2) $("load").innerHTML="功能陆续完善中......";
+   if(type==1) arg='?action=show&dir='+arg;
+   var options={};
+    options.url=arg?arg:'?action=show';
+    options.listener=callback;
+    options.method='GET';
+	var request = createRequest(options);
+	request.send(null);
+}
+function createRequest(options){
+	var req = false;
+	if(window.XMLHttpRequest) {
+		var req = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		var req = new window.ActiveXObject('Microsoft.XMLHTTP');
+	}
+	if(!req) return false;
+	req.onreadystatechange = function(){
+		if (req.readyState ==4 && req.status == 200){
+			options.listener.call(req);
+		}
+	};
+	req.open(options.method,options.url,true);
+	return req;
+}
+function callback(){
+	var json = eval("("+this.responseText+")");
+    $("show").innerHTML = json.data;
+    $("runtime").innerHTML = json.time;
+    $("memory").innerHTML = json.memory;
+    $("load").style.display="none";
+}
 ajax();
 </script>
 </body>
