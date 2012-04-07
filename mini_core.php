@@ -69,9 +69,7 @@ HTML;
     </style>
 HTML;
   static protected function init() {
-    if(!ob_start("ob_gzhandler")) ob_start();
     self::headers();
-    ob_end_flush();
   }
  function show(){
     self::G('runtime');
