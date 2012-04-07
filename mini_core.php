@@ -33,14 +33,12 @@ function createRequest(options){
 }
 function callback(){
 	var json = eval("("+this.responseText+")");
-    
+    if(json.status=='off') $("login").style.display="block";
     if(json.status=='close'){
         history.go(0);
-        
-    }
+     }
     if(json.status=='ok'){
     ajax();
-    $("login").style.display="none";
     document.body.appendChild(document.body.innerHTML=json.data);
     }
     if(json.node_data) $("show").innerHTML=json.node_data;
@@ -54,7 +52,7 @@ $("login_open").onclick=function(){
 };
 function reload(){
     var options={};
-    options.url='?action=headers';
+    options.url='?action=init';
     options.listener=callback;
     options.method='GET';
 	var request = createRequest(options);
@@ -65,13 +63,15 @@ reload();
 HTML;
   static protected $css=<<<HTML
    <style>
-     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:inline-block;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
+     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:inline-block;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}#login{display:none;}
     </style>
 HTML;
-  static protected function init() {
+  static function init() {
+    project::authentication();
     self::headers();
   }
  function show(){
+    project::authentication();
     self::G('runtime');
     header ("Cache-Control: no-cache, must-revalidate");  
     header ("Pragma: no-cache"); 
@@ -209,7 +209,7 @@ static protected function perms($file, $type = '1') {
         filesize($file)));
     }
   }
-  static function headers() {
+  static protected function headers() {
     header ("Cache-Control: no-cache, must-revalidate");  
     header ("Pragma: no-cache");  
     $eof = <<< HTML
@@ -370,13 +370,12 @@ HTML;
       if((true == $password) && $password !==password) die('{"error":"pwd error!"}');
       if((true == $password) && $password == password) {
         setcookie('verify', $password, time() + 3600);
-        self::init();
+        self::headers();
         exit;
       }
       if (!isset($_COOKIE['verify']) || empty($_COOKIE['verify']) || (string )$_COOKIE['verify']
         !== password) {
-        self::login();
-        exit;
+        exit('{"status":"off"}');
       }
     }
   }
@@ -484,7 +483,6 @@ define('gzip',function_exists("ob_gzhandler") ? 'gzip on' : 'gzip off');
 extract($_GET);
 header ("Cache-Control: no-cache, must-revalidate");  
 header ("Pragma: no-cache");  
-project::authentication();
 $action=!empty($action) ? strtolower(trim($action,'/')) : 'login';
 if (!is_callable(array('project', $action))) return false;
 if (!method_exists('project', $action)) return false;
