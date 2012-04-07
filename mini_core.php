@@ -1,13 +1,82 @@
 //<?php
 run();
 class project {
-  static function init() {
+  static protected $js=<<<HTML
+  <script type="text/javascript">
+  function $(d){return document.getElementById(d);}
+  function ajax(arg,type){
+   if($("load")) { $("load").style.display="block"; $("load").innerHTML="正在载入......";}
+   if(type==2 || arg==2) $("load").innerHTML="功能陆续完善中......";
+   if(type==1) arg='?action=show&dir='+arg;
+   var options={};
+    options.url=arg?arg:'?action=show';
+    options.listener=callback;
+    options.method='GET';
+	var request = createRequest(options);
+	request.send(null);
+}
+function createRequest(options){
+	var req = false;
+	if(window.XMLHttpRequest) {
+		var req = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		var req = new window.ActiveXObject('Microsoft.XMLHTTP');
+	}
+	if(!req) return false;
+	req.onreadystatechange = function(){
+		if (req.readyState ==4 && req.status == 200){
+			options.listener.call(req);
+		}
+	};
+	req.open(options.method,options.url,true);
+	return req;
+}
+function callback(){
+	var json = eval("("+this.responseText+")");
+    
+    if(json.status=='close'){
+        history.go(0);
+        
+    }
+    if(json.status=='ok'){
+    ajax();
+    $("login").style.display="none";
+    document.body.appendChild(document.body.innerHTML=json.data);
+    }
+    if(json.node_data) $("show").innerHTML=json.node_data;
+    if(json.time) $("runtime").innerHTML = json.time;
+    if(json.memory) $("memory").innerHTML = json.memory;
+    if($("load")) { $("load").style.display="none";}   
+}
+$("login_open").onclick=function(){
+    var pwd=$("pwd").value;
+    if(pwd) ajax('?action=authentication&pwd='+pwd);
+};
+function reload(){
+    var options={};
+    options.url='?action=headers';
+    options.listener=callback;
+    options.method='GET';
+	var request = createRequest(options);
+	request.send(null);
+}
+reload();
+</script>
+HTML;
+  static protected $css=<<<HTML
+   <style>
+     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:inline-block;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
+    </style>
+HTML;
+  static protected function init() {
     if(!ob_start("ob_gzhandler")) ob_start();
     self::headers();
     ob_end_flush();
   }
  function show(){
     self::G('runtime');
+    header ("Cache-Control: no-cache, must-revalidate");  
+    header ("Pragma: no-cache"); 
     header("Content-type:text/html;charset=utf-8");
     $file = !empty($_GET["dir"]) ? iconv("UTF-8", "GBK",urldecode($_GET["dir"])) ."/" : iconv("UTF-8", "GBK", sprintf("%s%s",rtrim(__ROOT__,"/"),"/"));
     $file=strtolower($file);
@@ -111,7 +180,7 @@ HTML;
         $directory['html'].=str_replace($search,$replace,$return_file);                  
     }
     
-    $directory['data']=str_replace(array('{file}','{back}'),
+    $directory['node_data']=str_replace(array('{file}','{back}'),
                                    array($directory['html'],urlencode(dirname(iconv("GBK", "UTF-8",$file)))),
                                    $return);
     unset($directory['html']);
@@ -124,6 +193,7 @@ HTML;
     echo json_encode($directory);
     ob_end_flush();
     //print_r($directory);
+    exit;
 }
 
 static protected function perms($file, $type = '1') {
@@ -141,22 +211,11 @@ static protected function perms($file, $type = '1') {
         filesize($file)));
     }
   }
-  static protected function headers() {
+  static function headers() {
+    header ("Cache-Control: no-cache, must-revalidate");  
+    header ("Pragma: no-cache");  
     $eof = <<< HTML
-<!DOCTYPE HTML>
-<head>
-	<meta http-equiv="content-type" content="text/html" />
-    <meta http-equiv="content-type" charset="UTF-8"/>
-	<meta name="author" content="Steve Smith" />
-
-	<title>{title}</title>
-    <style>
-    a{color:#00f;text-decoration:underline;}a:hover{color:#f00;text-decoration:none;}body{font:12px Arial,Tahoma;line-height:16px;margin:0;padding:0;}#header{height:20px;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#e9e9e9;padding:5px 15px 5px 5px;font-weight:bold;}#header .left{float:left;}#header .right{float:right;}#menu{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#f1f1f1;padding:5px 15px 5px 5px;}#content{margin:0 auto;width:98%;}#content h2{margin-top:15px;padding:0;height:24px;line-height:24px;font-size:14px;color:#5B686F;}#content #base,#content #base2{background:#eee;margin-bottom:10px;}#base input{float:right;border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;margin:5px 10px;}.cdrom{padding:5px;margin:auto 7px;}.h{margin-top:8px;}#base2 .input{font:12px Arial,Tahoma;background:#fff;border:1px solid #666;padding:2px;height:18px;}#base2 .bt{border-color:#b0b0b0;background:#3d3d3d;color:#ffffff;font:12px Arial,Tahoma;height:22px;}dl,dt,dd{margin:0;}.focus{border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;}.fff{background:#fff}dl{margin:0 auto;width:100%;}dt,dd{overflow:hidden;border-top:1px solid white;border-bottom:1px solid #DDD;background:#F1F1F1;padding:5px 15px 5px 5px;}dt{border-top:1px solid white;border-bottom:1px solid #DDD;background:#E9E9E9;font-weight:bold;padding:5px 15px 5px 5px;}dt span,dd span{width:19%;display:inline-block;text-indent:0em;overflow:hidden;}#footer{padding:10px;border-bottom:1px solid #fff;border-top:1px solid #ddd;background:#eee;}#load{position:fixed;right:0;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:#ffffaa;padding:5px 15px 5px 5px;display:none;}.in{width:40px;text-align:center;}
-    </style>
-</head>
-<body>
 <div id="load">
-loading……
 </div>
 <div id="header">
   <div class="left">
@@ -203,46 +262,6 @@ loading……
   . Copyright (C) 2010-2012
    All Rights Reserved.
 </div>
-<script type="text/javascript">
-  function $(d){return document.getElementById(d);}
-  function ajax(arg,type){
-   $("load").style.display="block";
-   if(type==2 || arg==2) $("load").innerHTML="功能陆续完善中......";
-   if(type==1) arg='?action=show&dir='+arg;
-   var options={};
-    options.url=arg?arg:'?action=show';
-    options.listener=callback;
-    options.method='GET';
-	var request = createRequest(options);
-	request.send(null);
-}
-function createRequest(options){
-	var req = false;
-	if(window.XMLHttpRequest) {
-		var req = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		var req = new window.ActiveXObject('Microsoft.XMLHTTP');
-	}
-	if(!req) return false;
-	req.onreadystatechange = function(){
-		if (req.readyState ==4 && req.status == 200){
-			options.listener.call(req);
-		}
-	};
-	req.open(options.method,options.url,true);
-	return req;
-}
-function callback(){
-	var json = eval("("+this.responseText+")");
-    $("show").innerHTML = json.data;
-    $("runtime").innerHTML = json.time;
-    $("memory").innerHTML = json.memory;
-    $("load").style.display="none";
-}
-ajax();
-</script>
-</body>
-</html>
 HTML;
     $actions = array(
       'WebRoot' => $_SERVER['DOCUMENT_ROOT'],
@@ -261,7 +280,7 @@ HTML;
     $menu = '';
     $action = '';
     $logout = array_shift($menus);
-    $menu .= sprintf('<a href="%s">%s</a> | ',
+    $menu .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name)">%s</a> | ',
       '?action=logout', $logout);
     foreach ($menus as $key => $val) {
       $menu .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
@@ -282,7 +301,9 @@ HTML;
       '{cdrom}',
       '{action}',
       '{gzip}',
-      '{memory}');
+      '{memory}',
+      '{js}',
+      '{css}');
     $replace = array(
       title,
       $_SERVER['HTTP_HOST'],
@@ -294,9 +315,16 @@ HTML;
       self::disk(),
       trim($action, '| '),
       gzip,
-      self::byte_format(memory_get_peak_usage()));
+      self::byte_format(memory_get_peak_usage()),
+      self::$js,
+      self::$css);
     $eof = str_replace($serach, $replace, $eof);
-    echo $eof;
+    $json['status']='ok';
+    $json['data']=$eof;
+    if(!ob_start("ob_gzhandler")) ob_start();
+    echo json_encode($json);
+    ob_end_flush();
+    exit;
   }
   static protected function disk() {
     if (is_win) {
@@ -339,11 +367,13 @@ HTML;
   static function authentication() {
     if (true == password) {
       //if(!empty($_POST['pwd']) && !preg_match('/^[a-z0-9]+$/',$_POST['pwd'])) exit;
-      if (strlen(password) == 32) $password = hash(crypt, $_POST['pwd']);
-      else  $password = $_POST['pwd'];
-      if (isset($password) && $password == password) {
+      if(!empty($_GET['pwd']) && strlen(password) == 32) $password = hash(crypt, $_GET['pwd']); 
+      else $password = $_GET['pwd'];
+      if((true == $password) && $password !==password) die('{"error":"pwd error!"}');
+      if((true == $password) && $password == password) {
         setcookie('verify', $password, time() + 3600);
-        self::reload();
+        self::init();
+        exit;
       }
       if (!isset($_COOKIE['verify']) || empty($_COOKIE['verify']) || (string )$_COOKIE['verify']
         !== password) {
@@ -353,33 +383,38 @@ HTML;
     }
   }
   public function logout() {
-    setcookie('verify', '', time() - 3600);
-    self::reload();
+    setcookie('verify', '', time() - 3600*8);
+    unset($_COOKIE['verify']);
+    clearstatcache();
+    die('{"status":"close"}');
   }
-  static protected function reload() {
-    header("Location:" . self);
-  }
-  static protected function login() {
+  static function login() {
     $login=<<<LOGIN
          <!DOCTYPE HTML>
          <head>
 	     <meta http-equiv="content-type" content="text/html" />
    	     <meta name="author" content="Steve Smith" />
          <meta http-equiv="content-type" charset="UTF-8" />
-	     <style type="text/css">
-	     input {font:11px Verdana;BACKGROUND: #FFFFFF;height: 18px;border: 1px solid #666666;}
-	    </style>
    	    <title>{title}</title>
+          {css}
         </head>
         <body>
-	   <form method="POST" action="">
+        <div class="h"></div>
+       <div id="login">
        <span style="font:11px Verdana;">Password: </span><input id="pwd" name="pwd" type="password" size="20">
-       <input id="login" type="submit" value="Login">
-        </form>
+       <input id="login_open" type="button" value="Login">
+       </div>
        </body>
+       {js}
        </html>
 LOGIN;
-    echo str_replace('{title}',title,$login);
+    $search=array('{css}',
+                  '{title}',
+                  '{js}');
+    $replace=array(self::$css,
+                   title,
+                   self::$js);
+    echo str_replace($search,$replace,$login);
   }
   static protected function getperms($path) {
     $perms = fileperms($path);
@@ -449,8 +484,10 @@ define('is_win','win' == substr(strtolower(PHP_OS),0,3));
 date_default_timezone_set('asia/shanghai');
 define('gzip',function_exists("ob_gzhandler") ? 'gzip on' : 'gzip off');
 extract($_GET);
+header ("Cache-Control: no-cache, must-revalidate");  
+header ("Pragma: no-cache");  
 project::authentication();
-$action=!empty($action) ? strtolower(trim($action,'/')) : 'init';
+$action=!empty($action) ? strtolower(trim($action,'/')) : 'login';
 if (!is_callable(array('project', $action))) return false;
 if (!method_exists('project', $action)) return false;
 call_user_func(array('project', $action));
