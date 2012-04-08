@@ -36,7 +36,9 @@ function callback(){
 	var json = eval("("+this.responseText+")");
     if(json.status=='off') $("login").style.display="block";
     if(json.status=='close'){
-        location.replace(location.href);
+        //if(history.replaceState) history.replaceState(null, document.title,'mini.php');
+        location.reload(true);
+        //location.replace(location.href);
      }
     if(json.status=='ok'){
     ajax();
