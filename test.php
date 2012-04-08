@@ -351,8 +351,8 @@ HTML;
       trim($action, '| '),
       gzip,
       self::byte_format(memory_get_peak_usage()),
-      self::$js,
-      self::$css);
+      self::js(),
+      self::css());
     $eof = str_replace($serach, $replace, $eof);
     $json['status']='ok';
     $json['data']=$eof;
