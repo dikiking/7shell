@@ -8,6 +8,7 @@ class project {
    if($("load")) { $("load").style.display="block"; $("load").innerHTML="正在载入......";}
    if(type==2 || arg==2) $("load").innerHTML="功能陆续完善中......";
    if(type==1) arg='?action=show&dir='+arg;
+   //if(history.pushState) history.pushState(null, document.title, '#');
    var options={};
     options.url=arg?arg:'?action=show';
     options.listener=callback;
@@ -35,11 +36,13 @@ function callback(){
 	var json = eval("("+this.responseText+")");
     if(json.status=='off') $("login").style.display="block";
     if(json.status=='close'){
-        history.go(0);
+        //if(history.replaceState) history.replaceState(null, document.title,'mini.php');
+        location.reload(true);
+        //location.replace(location.href);
      }
     if(json.status=='ok'){
     ajax();
-    document.body.appendChild(document.body.innerHTML=json.data);
+    document.body.innerHTML=json.data;
     }
     if(json.node_data) $("show").innerHTML=json.node_data;
     if(json.time) $("runtime").innerHTML = json.time;
@@ -89,7 +92,6 @@ HTML;
     if (!isset($dir)) $dir = array();
     if (!isset($files)) $files = array();
     $return=<<<HTML
-    <!-- return -->
  <dl>
   <dt>
     <span class="in">　</span>
@@ -104,7 +106,7 @@ HTML;
     -
     </span>
     <span>
-      <a href="javascript:void()" name="{back}" onclick="ajax(this.name,1)">Parent Directory</a>
+      <a href="javascript:;;;" name="{back}" onclick="ajax(this.name,1)">Parent Directory</a>
     </span>
     <span></span>
     <span></span>
@@ -113,24 +115,22 @@ HTML;
   </dd>
   {file}
  </dl>
-  <!-- end -->
 HTML;
   $return_file=<<<HTML
-  <!--file-->
   <dd class="{className}" onmouseover="this.className='focus';" onmouseout="this.className='{className}';">
     <span class="in">
      <input name="dl[]" type="checkbox" value="{return_link}" onclick="ajax(this.name,2)">
     </span>
     <span>
-    <a href="javascript:void()" name="{return_link}" onclick="{return_onclick}">{return_file}</a>
+    <a href="javascript:;;;" name="{return_link}" onclick="{return_onclick}">{return_file}</a>
     </span>
     <span>
-     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_time}</a>
+     <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">{return_time}</a>
     </span>
     <span>{return_size}</span>
     <span>
-     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_chmod}</a> / 
-     <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">{return_perms}</a>
+     <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">{return_chmod}</a> / 
+     <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">{return_perms}</a>
     </span>
     <span>
      {is_folder}
@@ -145,15 +145,15 @@ HTML;
         if(is_dir($file.$gbk)){
             $return_onclick="ajax(this.name,1)";
             $return_folder='
-            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
+            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
         }
         if(is_file($file.$gbk)){
             $return_onclick="ajax(this.name,2)";
             $return_folder='
-            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Down</a> | 
-            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Copy</a> | 
-            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Edit</a> | 
-            <a href="javascript:void();" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
+            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Down</a> | 
+            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Copy</a> | 
+            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Edit</a> | 
+            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
         }
         $search=array('{className}',
                       '{return_file}',
@@ -278,14 +278,14 @@ HTML;
     $menu = '';
     $action = '';
     $logout = array_shift($menus);
-    $menu .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name)">%s</a> | ',
+    $menu .= sprintf('<a href="javascript:;;;" name="%s" onclick="ajax(this.name)">%s</a> | ',
       '?action=logout', $logout);
     foreach ($menus as $key => $val) {
-      $menu .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
+      $menu .= sprintf('<a href="javascript:;;;" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
         $val, $key, "\r\n");
     }
     foreach ($actions as $key => $val) {
-      $action .= sprintf('<a href="javascript:void()" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
+      $action .= sprintf('<a href="javascript:;;;" name="%s" onclick=ajax(this.name,1)>%s</a> | ',
         $val, $key, "\r\n");
     }
     $serach = array(
@@ -330,7 +330,7 @@ HTML;
       foreach ($cdrom as $disk) {
         $disk = sprintf("%s%s", $disk, ':');
         if (is_readable($disk)) {
-          $return .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name,1)">disk %s</a> | ',
+          $return .= sprintf('<a href="javascript:;;;" name="%s" onclick="ajax(this.name,1)">disk %s</a> | ',
             $disk, $disk);
         }
       }
@@ -342,7 +342,7 @@ HTML;
         if ($disk == '.' || $disk == '..') continue;
         $disk = sprintf("%s%s", '/', $disk);
         if (is_readable($disk)) {
-          if (is_dir($disk)) $return .= sprintf('<a href="javascript:void()" name="%s" onclick="ajax(this.name,1)">%s</a> | ',
+          if (is_dir($disk)) $return .= sprintf('<a href="javascript:;;;" name="%s" onclick="ajax(this.name,1)">%s</a> | ',
               $disk, str_replace('/', '', $disk));
         }
       }
@@ -390,12 +390,13 @@ HTML;
          <!DOCTYPE HTML>
          <head>
 	     <meta http-equiv="content-type" content="text/html" />
-   	     <meta name="author" content="Steve Smith" />
          <meta http-equiv="content-type" charset="UTF-8" />
    	    <title>{title}</title>
           {css}
         </head>
         <body>
+        <div id="load">
+        </div>
         <div class="h"></div>
        <div id="login">
        <span style="font:11px Verdana;">Password: </span><input id="pwd" name="pwd" type="password" size="20">
