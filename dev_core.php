@@ -1,4 +1,3 @@
-//<?php
 run();
 class project {
   static protected $js=<<<HTML
@@ -523,4 +522,3 @@ if (!is_callable(array('project', $action))) return false;
 if (!method_exists('project', $action)) return false;
 call_user_func(array('project', $action));
 }
-//?>
