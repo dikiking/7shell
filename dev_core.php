@@ -2,65 +2,91 @@
 run();
 class project {
   static protected $js=<<<HTML
-  <script type="text/javascript">
-  function $(d){return document.getElementById(d);}
-  function ajax(arg,type){
-   if($("load")) { $("load").style.display="block"; $("load").innerHTML="正在载入......";}
-   if(type==2 || arg==2) $("load").innerHTML="功能陆续完善中......";
-   if(type==1) arg='?action=show&dir='+arg;
-   //if(history.pushState) history.pushState(null, document.title, '#');
-   var options={};
-    options.url=arg?arg:'?action=show';
-    options.listener=callback;
-    options.method='GET';
-	var request = createRequest(options);
-	request.send(null);
+<script type="text/javascript">
+function ajax(arg, type) {
+        if ($("load")) {
+                $("load").style.display = "block";
+                $("load").innerHTML = "正在载入......";
+        }
+        if (type == 2 || arg == 2) $("load").innerHTML = "功能陆续完善中......";
+        if (type == 1) arg = '?action=show&dir=' + arg;
+        var options = {};
+        options.url = arg ? arg : '?action=show';
+        options.listener = callback;
+        options.method = 'GET';
+        var request = XmlRequest(options);
+        request.send(null);
 }
-function createRequest(options){
-	var req = false;
-	if(window.XMLHttpRequest) {
-		var req = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		var req = new window.ActiveXObject('Microsoft.XMLHTTP');
-	}
-	if(!req) return false;
-	req.onreadystatechange = function(){
-		if (req.readyState ==4 && req.status == 200){
-			options.listener.call(req);
-		}
-	};
-	req.open(options.method,options.url,true);
-	return req;
+
+function XmlRequest(options) {
+        var req = false;
+        if (window.XMLHttpRequest) {
+                var req = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+                var req = new window.ActiveXObject('Microsoft.XMLHTTP');
+        }
+        if (!req) return false;
+        req.onreadystatechange = function() {
+                if (req.readyState == 4 && req.status == 200) {
+                        options.listener.call(req);
+                }
+        };
+        req.open(options.method, options.url, true);
+        return req;
 }
-function callback(){
-	var json = eval("("+this.responseText+")");
-    if(json.status=='off') $("login").style.display="block";
-    if(json.status=='close'){
-        location.replace(location.href);
-     }
-    if(json.status=='ok'){
-    ajax();
-    document.body.innerHTML=json.data;
-    }
-    if(json.node_data) $("show").innerHTML=json.node_data;
-    if(json.time) $("runtime").innerHTML = json.time;
-    if(json.memory) $("memory").innerHTML = json.memory;
-    if($("load")) { $("load").style.display="none";}   
+
+function callback() {
+        var json = eval("(" + this.responseText + ")");
+        if (json.status == 'off') $("login").style.display = "block";
+        if (json.status == 'close') {
+                location.replace(location.href);
+        }
+        if (json.status == 'ok') {
+                ajax();
+                document.body.innerHTML = json.data;
+        }
+        if (json.node_data) $("show").innerHTML = json.node_data;
+        if (json.time) $("runtime").innerHTML = json.time;
+        if (json.memory) $("memory").innerHTML = json.memory;
+        if ($("load")) {
+                $("load").style.display = "none";
+        }
 }
-$("login_open").onclick=function(){
-    var pwd=$("pwd").value;
-    if(pwd) ajax('?action=authentication&pwd='+pwd);
-};
-function reload(){
-    var options={};
-    options.url='?action=init';
-    options.listener=callback;
-    options.method='GET';
-	var request = createRequest(options);
-	request.send(null);
+
+function reload() {
+        var options = {};
+        options.url = '?action=init';
+        options.listener = callback;
+        options.method = 'GET';
+        var request = XmlRequest(options);
+        request.send(null);
 }
-reload();
-</script>
+
+function addEvent(obj, evt, fn) {
+        if (obj.addEventListener) {
+                obj.addEventListener(evt, fn, false);
+        } else if (obj.attachEvent) {
+                obj.attachEvent('on' + evt, fn);
+        }
+}
+
+function init() {
+        $();
+        login();
+        reload();
+}
+function login() {
+        $("login_open").onclick = function() {
+                var pwd = $("pwd").value;
+                if (pwd) ajax('?action=authentication&pwd=' + pwd);
+        }
+}
+
+function $(d) {
+        return document.getElementById(d);
+}
+addEvent(window, 'load', init);
+   </script>
 HTML;
   static protected $css=<<<HTML
    <style>
@@ -90,6 +116,7 @@ HTML;
     if (!isset($dir)) $dir = array();
     if (!isset($files)) $files = array();
     $return=<<<HTML
+ <!-- return -->
  <dl>
   <dt>
     <span class="in">　</span>
@@ -115,6 +142,7 @@ HTML;
  </dl>
 HTML;
   $return_file=<<<HTML
+  <!-- file -->
   <dd class="{className}" onmouseover="this.className='focus';" onmouseout="this.className='{className}';">
     <span class="in">
      <input name="dl[]" type="checkbox" value="{return_link}" onclick="ajax(this.name,2)">
@@ -142,16 +170,21 @@ HTML;
         $className= $i % 2 ? "dd" : "fff";
         if(is_dir($file.$gbk)){
             $return_onclick="ajax(this.name,1)";
-            $return_folder='
-            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
+            $return_folder=sprintf('
+            <a href="javascript:;;;" name="%s" onclick="ajax(this.name,2)">Rename</a>',
+            urlencode($utf8_file.$utf8));
         }
         if(is_file($file.$gbk)){
             $return_onclick="ajax(this.name,2)";
-            $return_folder='
-            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Down</a> | 
-            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Copy</a> | 
-            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Edit</a> | 
-            <a href="javascript:;;;" name="{return_link}" onclick="ajax(this.name,2)">Rename</a>';
+            $return_folder=sprintf('
+            <a href="javascript:;;;" name="%s" onclick="ajax(this.name,2)">Down</a> | 
+            <a href="javascript:;;;" name="%s" onclick="ajax(this.name,2)">Copy</a> | 
+            <a href="javascript:;;;" name="%s" onclick="ajax(this.name,2)">Edit</a> | 
+            <a href="javascript:;;;" name="%s" onclick="ajax(this.name,2)">Rename</a>',
+            urlencode($utf8_file.$utf8),
+            urlencode($utf8_file.$utf8),
+            urlencode($utf8_file.$utf8),
+            urlencode($utf8_file.$utf8));
         }
         $search=array('{className}',
                       '{return_file}',
@@ -161,7 +194,7 @@ HTML;
                       '{return_perms}',
                       '{return_link}',
                       '{return_onclick}',
-                      '{is_folder}'
+                      '{is_folder}',
                       );
         $replace=array($className,
                        $utf8,
@@ -171,7 +204,7 @@ HTML;
                        self::perms($file.$gbk,2),
                        urlencode($utf8_file.$utf8),
                        $return_onclick,
-                       $return_folder
+                       $return_folder,
                        );
         $directory['html'].=str_replace($search,$replace,$return_file);                  
     }
@@ -385,24 +418,27 @@ HTML;
   }
   static function login() {
     $login=<<<LOGIN
-         <!DOCTYPE HTML>
-         <head>
-	     <meta http-equiv="content-type" content="text/html" />
-         <meta http-equiv="content-type" charset="UTF-8" />
-   	    <title>{title}</title>
-          {css}
-        </head>
-        <body>
-        <div id="load">
-        </div>
-        <div class="h"></div>
-       <div id="login">
-       <span style="font:11px Verdana;">Password: </span><input id="pwd" name="pwd" type="password" size="20">
-       <input id="login_open" type="button" value="Login">
-       </div>
-       </body>
-       {js}
-       </html>
+<!DOCTYPE HTML>
+<head>
+<meta http-equiv="content-type" content="text/html" />
+<meta http-equiv="content-type" charset="UTF-8" />
+<title>{title}</title>
+{css}
+{js}
+</head>
+<body>
+  <div id="load">
+   </div>
+   <div class="h"></div>
+   <div id="login">
+     <span style="font:11px Verdana;">
+       Password: 
+     </span>
+     <input id="pwd" name="pwd" type="password" size="20">
+     <input id="login_open" type="button" value="Login">
+  </div>
+</body>
+</html>
 LOGIN;
     $search=array('{css}',
                   '{title}',
