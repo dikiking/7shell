@@ -11,7 +11,7 @@
 */
 error_reporting(0);
 session_start();
-define('password','7e9a1fb2b90fed7210a03041372d5b6b'); 
+define('password','b487679cead92c9e4cdce922d9327e67'); 
 define('title','山不在高，有仙则名；水不在深，有龙则灵。');
 define('copyright', 'E');
 if(empty($_SESSION['data'])){
