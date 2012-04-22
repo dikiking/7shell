@@ -18,4 +18,4 @@ service mysql-server start
 【更新内容】
 修改 loader.conf 覆盖文件位置~ [0:18 2012年3月11日]
 loader.conf boot丢失错误修复~ 20:04 2012/3/13
-修正php和apache 安装目录到 /usr/local [10:41 2012/3/28]
+修正php和apache 安装目录到 /usr/local [10:41 2012/3/28].
