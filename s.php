@@ -1,5 +1,7 @@
 <?php
-error_reporting(0);
+error_reporting(7);
+define('password','debug');
+define('debug',true);
 run();
 class project {
   static protected function js(){
@@ -880,8 +882,8 @@ HTML;
     if($_SERVER['HTTP_AJAX']=='true') self::headers();  
   }
   public function logout() {
-    setcookie('key', '', time() - 3600*24*30);
-    unset($_COOKIE['key']);
+    setcookie('verify', '', time() - 3600*24*30);
+    unset($_COOKIE['verify']);
     session_start();
     session_destroy();
      $login=<<<LOGIN
@@ -1012,7 +1014,7 @@ LOGIN;
 function run(){
 set_time_limit(0);
 ini_set('memory_limit',-1);
-if(!defined('password')) define('password','goodweb');
+if(!defined('password')) define('password','');
 if(!defined('title')) define('title','404 Not Found');
 if(!defined('copyright')) define('copyright', 'E');
 define('self',$_SERVER["SCRIPT_NAME"]);
