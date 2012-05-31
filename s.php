@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 run();
 class project {
   static protected function js(){
