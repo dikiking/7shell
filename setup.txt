@@ -1,17 +1,17 @@
-freebsd9.0 apache2.41+ mysql5.5.17+ php5.4+memcached +ruby+python+mongodb 一键安装 
+freebsd9.0 apache2.43+mysql5.5.27+ php5.4.6+memcached +ruby+python+mongodb 一键安装 最新版
 【安装】
 #    fetch http://7shell.googlecode.com/svn/fastbsd
 #    chmod +x fastbsd
 #   ./fastbsd
 --------------#是root 登陆后的终端显示
-【服务启动】
+【服务启动----apache篇】
 启动apache
 service apache start 
 启动mysql
 service mysql-server start
 
 
-【WEB目录】
+【WEB目录-----apache篇】
 
  /var/www  修改/usr/local/apache/conf/httpd.conf 可自行配置目录
 
@@ -19,3 +19,4 @@ service mysql-server start
 修改 loader.conf 覆盖文件位置~ [0:18 2012年3月11日]
 loader.conf boot丢失错误修复~ 20:04 2012/3/13
 修正php和apache 安装目录到 /usr/local [10:41 2012/3/28].
+更新到最新版，调整pkg网站源 11:15 AM 9/15/2012
