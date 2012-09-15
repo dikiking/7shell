@@ -1,4 +1,4 @@
-freebsd9.0 apache2.43+mysql5.5.27+ php5.4.6+memcached +ruby+python+mongodb 一键安装 最新版
+freebsd9.0 apache2.43+mysql5.5.27+ php5.4.7+memcached+ruby+python+mongodb 一键安装 最新版
 【安装】
 #    fetch http://7shell.googlecode.com/svn/fastbsd
 #    chmod +x fastbsd
